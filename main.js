@@ -8,13 +8,17 @@ import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, 
 //import { buildDepositionPrompt, buildOocPrompt, buildSummaryPrompt, buildCaseSummaryPrompt } from './promptBuilder.js'; // We will create this file next
 
 // --- Event Handlers ---
-
+// In main.js, replace the entire handleProviderChange function with this:
 function handleProviderChange(e) {
     const providerId = e.target.value;
+    const newProviderConfig = PROVIDERS_CONFIG[providerId]; // Get the new provider's config
+    
     setState({
-        providerId,
-        apiKey: localStorage.getItem(`llm_${providerId}_key`) || ''
+        providerId: providerId,
+        apiKey: localStorage.getItem(`llm_${providerId}_key`) || '',
+        model: newProviderConfig.defaultModel // Set the model to the new default
     });
+
     if (dom.apiKeyInput) dom.apiKeyInput.value = getState().apiKey;
 
     if (dom.ollamaSetupInfo) {
@@ -26,6 +30,7 @@ function handleProviderChange(e) {
     renderModelOptions();
     resetChat();
 }
+
 
 function handleApiKeyChange(e) {
     const { providerId } = getState();
