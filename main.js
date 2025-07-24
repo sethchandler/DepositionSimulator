@@ -5,7 +5,7 @@ import { PRE_BUILT_SCENARIOS } from './scenarios.js';
 import { getState, setState, getActiveWitness } from './state.js';
 import { callLlmApi, testOllamaConnection } from './api.js';
 import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError } from './ui.js';
-import { buildDepositionPrompt, buildOocPrompt, buildSummaryPrompt, buildCaseSummaryPrompt } from './promptBuilder.js'; // We will create this file next
+//import { buildDepositionPrompt, buildOocPrompt, buildSummaryPrompt, buildCaseSummaryPrompt } from './promptBuilder.js'; // We will create this file next
 
 // --- Event Handlers ---
 
