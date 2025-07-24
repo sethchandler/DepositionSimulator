@@ -1,5 +1,4 @@
- <style>
-        :root {
+       :root {
             --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             --background-color: #f0f2f5;
             --card-background: #ffffff;
@@ -389,4 +388,4 @@
             margin: 10px 0;
             color: var(--label-color);
         }
-    </style>
+  
