@@ -43,7 +43,7 @@ gemini: {
     label: "Google Gemini",
     models: [
         { name: "gemini-2.5-flash", pricing: { inputPerMillionTokens: 0.35, outputPerMillionTokens: 0.70 } },
-        { name: "gemini-2.5-pro (Most expensive)", pricing: { inputPerMillionTokens: 3.50, outputPerMillionTokens: 10.50 } }
+        { name: "gemini-2.5-pro", pricing: { inputPerMillionTokens: 3.50, outputPerMillionTokens: 10.50 } }
     ],
     defaultModel: "gemini-2.5-flash",
 },
