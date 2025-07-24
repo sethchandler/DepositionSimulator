@@ -25,21 +25,25 @@ export const DOM_ELEMENT_IDS = {
 
 export const PROVIDERS_CONFIG = {
     openai: {
-        label: "OpenAI",
-        models: [
-            { name: "gpt-4o-mini", pricing: { inputPerMillionTokens: 0.15, outputPerMillionTokens: 0.60 } },
-            { name: "gpt-4o", pricing: { inputPerMillionTokens: 5.00, outputPerMillionTokens: 15.00 } }
-        ],
-        defaultModel: "gpt-4o-mini",
-    },
-    gemini: {
-        label: "Google Gemini",
-        models: [
-            { name: "gemini-1.5-flash-latest", pricing: { inputPerMillionTokens: 0.35, outputPerMillionTokens: 0.70 } },
-            { name: "gemini-1.5-pro-latest", pricing: { inputPerMillionTokens: 3.50, outputPerMillionTokens: 10.50 } }
-        ],
-        defaultModel: "gemini-1.5-flash-latest",
-    },
+    label: "OpenAI",
+    models: [
+        { name: "GPT-4.1 mini", pricing: { inputPerMillionTokens: 0.40, outputPerMillionTokens: 1.60 } },
+        { name: "GPT-4.1 nano (Dirt cheal)", pricing: { inputPerMillionTokens: 0.10, outputPerMillionTokens: 0.40 } },
+        { name: "OpenAI o4-mini", pricing: { inputPerMillionTokens: 1.10, outputPerMillionTokens: 4.40 } },
+        { name: "GPT-4.1 (High Cost)", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } },
+        { name: "OpenAI o3 (High Cost)", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } }
+    ],
+    defaultModel: "GPT-4.1 mini",
+},
+
+gemini: {
+    label: "Google Gemini",
+    models: [
+        { name: "gemini-2.5-flash", pricing: { inputPerMillionTokens: 0.35, outputPerMillionTokens: 0.70 } },
+        { name: "gemini-2.5-pro (Most expensive)", pricing: { inputPerMillionTokens: 3.50, outputPerMillionTokens: 10.50 } }
+    ],
+    defaultModel: "gemini-2.5-flash",
+},
     ollama: {
         label: "Ollama (Local - Privacy Mode)",
         requiresSetup: true,
