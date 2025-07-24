@@ -1,1 +1,392 @@
+ <style>
+        :root {
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --background-color: #f0f2f5;
+            --card-background: #ffffff;
+            --text-color: #1c1e21;
+            --label-color: #606770;
+            --border-color: #ced0d4;
+            --input-background: #f5f6f7;
+            --button-background: #1877f2;
+            --button-text-color: #ffffff;
+            --user-bubble-background: #0084ff;
+            --assistant-bubble-background: #e4e6eb;
+            --meta-bubble-background: #fffbe6;
+            --meta-bubble-border: #ffe58f;
+            --disabled-color: #bec3c9;
+            --toggle-on-color: #1877f2;  /* Blue for Coach */
+            --toggle-off-color: #28a745; /* Green for Witness */
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--label-color);
+            margin-bottom: 6px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-background);
+            font-size: 16px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-group input[type="file"] {
+            background-color: transparent;
+            padding: 8px 0;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        
+        /* Custom Checkbox Styling */
+        .custom-checkbox {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .custom-checkbox input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
+        .custom-checkbox .checkmark {
+            position: relative;
+            height: 22px;
+            width: 22px;
+            background-color: var(--input-background);
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        
+        .custom-checkbox:hover .checkmark {
+            border-color: var(--button-background);
+            background-color: #f8f9fa;
+        }
+        
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: var(--button-background);
+            border-color: var(--button-background);
+        }
+        
+        .custom-checkbox .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+        
+        .custom-checkbox label {
+            font-size: 16px;
+            color: var(--text-color);
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        
+        .button {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--button-background);
+            color: var(--button-text-color);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .button-secondary {
+            background-color: #e4e6eb;
+            color: #050505;
+            font-size: 14px;
+            padding: 6px 12px;
+        }
+        .button:disabled {
+            background-color: var(--disabled-color);
+            cursor: not-allowed;
+        }
+        /* Find and replace the entire #chat-window rule with this one */
+            #chat-window {
+                display: flex;
+                flex-direction: column;
+                height: 75vh; /* This sets the card's height to 75% of the screen height */
+                min-height: 400px; /* Ensures it's never too small */
+            }
 
+        
+        #chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 16px;
+            background-color: #fff;
+            min-height: 0; /* Add this line */
+}
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 8px;
+        }
+        .chat-message {
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 80%;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+        .user-message {
+            background-color: var(--user-bubble-background);
+            color: white;
+            align-self: flex-end;
+        }
+        .assistant-message {
+            background-color: var(--assistant-bubble-background);
+            color: #050505;
+            align-self: flex-start;
+        }
+        .meta-message {
+            background-color: var(--meta-bubble-background);
+            border: 1px solid var(--meta-bubble-border);
+            color: #573a00;
+            align-self: stretch;
+            max-width: 100%;
+        }
+        
+        /* Markdown rendering styles */
+        .chat-message h1, .chat-message h2, .chat-message h3 {
+            margin: 16px 0 8px 0;
+            font-weight: 600;
+        }
+        .chat-message h1 { font-size: 1.4em; }
+        .chat-message h2 { font-size: 1.3em; }
+        .chat-message h3 { font-size: 1.2em; }
+        .chat-message ul, .chat-message ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        .chat-message li {
+            margin: 4px 0;
+        }
+        .chat-message strong {
+            font-weight: 600;
+        }
+        .chat-message em {
+            font-style: italic;
+        }
+        .chat-message code {
+            background-color: rgba(0,0,0,0.1);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        .chat-message pre {
+            background-color: rgba(0,0,0,0.1);
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+        .chat-message pre code {
+            background: none;
+            padding: 0;
+        }
+        .chat-message p {
+            margin: 8px 0;
+        }
+        .chat-message p:first-child {
+            margin-top: 0;
+        }
+        .chat-message p:last-child {
+            margin-bottom: 0;
+        }
+        .typing-indicator {
+            padding: 8px 12px;
+            font-style: italic;
+            color: var(--label-color);
+        }
+        #chat-input-area {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        #chatInput {
+            flex-grow: 1;
+            resize: none;
+            overflow-y: hidden;
+            line-height: 1.5;
+            font-size: 17px;
+        }
+        #chat-input-area #sendButton {
+            width: auto;
+            padding: 0 20px;
+            height: 46px;
+        }
+        .app-header {
+            text-align: center;
+        }
+        .toggle-switch-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-off-color);
+            transition: .4s;
+            border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--toggle-on-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+        #cost-details {
+            display: flex;
+            justify-content: space-around;
+            font-size: 14px;
+            color: var(--label-color);
+            background-color: var(--input-background);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        #cost-details p {
+            margin: 0;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        .summary-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            border-radius: 5px;
+        }
+        .summary-slider:hover {
+            opacity: 1;
+        }
+        .summary-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--button-background);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .summary-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--button-background);
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .divider {
+            text-align: center;
+            margin: 10px 0;
+            color: var(--label-color);
+        }
+    </style>
