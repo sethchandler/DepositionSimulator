@@ -23,11 +23,11 @@
                 <div id="ollamaSetupInfo" style="display: none; margin-top: 8px; padding: 10px; background-color: #e8f4fd; border: 1px solid #b3d7ff; border-radius: 4px; font-size: 14px;">
                     <strong>⚠️ Local LLM Setup Required</strong><br>
                     Ollama requires installation and high-end hardware (16GB+ RAM, preferably with GPU).<br>
-                    <a href="https://github.com/SethChandlerDepositionTrainer/ollama-setup" target="_blank" style="color: #1877f2;">📖 View detailed setup instructions</a> | 
+                    <a href="https://github.com/SethChandlerDepositionTrainer/ollama-setup" target="_blank" style="color: #1877f2;">📖 View detailed setup instructions</a> |
                     <button id="testOllamaConnection" class="button" style="padding: 4px 8px; font-size: 12px; margin-left: 8px;">Test Connection</button>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="apiKeyGroup">
                 <label for="apiKey">API Key</label>
                 <input type="password" id="apiKey" placeholder="Paste your key here">
             </div>
@@ -114,6 +114,7 @@
         </div>
     </div>
     
-    <script type="module" src="main.js"></script>
+    <script type="module" src="./main.js"></script>
 </body>
 </html>
+
