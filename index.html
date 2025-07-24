@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seth Chandler's Deposition Trainer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="app-header">
+            <h1 style="font-size: 28px; margin: 0 0 4px 0;">Seth Chandler's Deposition Trainer v 0.82</h1>
+            <p style="font-size: 16px; color: var(--label-color); margin: 0;">An educational tool for law students</p>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">1. LLM & Deposition Settings</h2>
+            <div class="form-group">
+                <label for="provider">Provider</label>
+                <select id="provider"></select>
+                <div id="ollamaSetupInfo" style="display: none; margin-top: 8px; padding: 10px; background-color: #e8f4fd; border: 1px solid #b3d7ff; border-radius: 4px; font-size: 14px;">
+                    <strong>⚠️ Local LLM Setup Required</strong><br>
+                    Ollama requires installation and high-end hardware (16GB+ RAM, preferably with GPU).<br>
+                    <a href="https://github.com/SethChandlerDepositionTrainer/ollama-setup" target="_blank" style="color: #1877f2;">📖 View detailed setup instructions</a> | 
+                    <button id="testOllamaConnection" class="button" style="padding: 4px 8px; font-size: 12px; margin-left: 8px;">Test Connection</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="apiKey">API Key</label>
+                <input type="password" id="apiKey" placeholder="Paste your key here">
+            </div>
+            <div class="form-group">
+                <label for="model">Model</label>
+                <select id="model"></select>
+            </div>
+            <div class="form-group">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="judgeMode">
+                    <span class="checkmark"></span>
+                    <label for="judgeMode">A Judge is present to rule on objections.</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">2. Choose a Scenario</h2>
+            <div class="form-group">
+                <label>Start with a Pre-Built Scenario</label>
+                <select id="scenarioSelector">
+                    <option value="-1" disabled selected>Select a case...</option>
+                    <option value="0">Homicide Case: The Eyewitness with a Secret</option>
+                    <option value="1">Domestic Violence Case: The Observant Neighbor</option>
+                    <option value="2">Employment Case: The HR Manager</option>
+                </select>
+            </div>
+            <p class="divider">OR</p>
+            <div class="form-group">
+                <label for="fileLoader">Upload Your Own Case File (.json)</label>
+                <input type="file" id="fileLoader" accept=".json">
+            </div>
+        </div>
+        
+        <div class="card" id="witnessSelectorCard" style="display: none;">
+            <h2 class="card-title">3. Select Witness</h2>
+            <div class="form-group">
+                <select id="witnessSelector"></select>
+            </div>
+        </div>
+        
+       <div class="card" id="intelCard" style="display: none;">
+            <h2 class="card-title">4. Pre-Deposition Intel</h2>
+            <div class="form-group">
+                <label for="summaryDetailSlider">Summary Detail Level</label>
+                <div class="slider-container">
+                    <span>Minimal</span>
+                    <input type="range" min="1" max="3" value="2" class="summary-slider" id="summaryDetailSlider">
+                    <span>Maximal</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button id="getSummaryButton" class="button" style="flex: 1;">Get Witness Summary</button>
+                <button id="getCaseSummaryButton" class="button" style="flex: 1;">Get Case Summary</button>
+            </div>
+        </div>
+
+        <div class="card" id="costTrackerCard">
+            <h2 class="card-title" style="margin-bottom: 10px;">Session Usage & Cost Estimate</h2>
+            <div id="cost-details">
+                <p><strong>Total Tokens:</strong> <span id="totalTokens">0</span></p>
+                <p><strong>Estimated Cost:</strong> <span id="estimatedCost">$0.000000</span></p>
+            </div>
+        </div>
+
+        <div class="card" id="chat-window">
+            <div class="card-header">
+                <h2 class="card-title" id="chat-title">Deposition</h2>
+                <button id="saveTranscriptButton" class="button button-secondary" disabled>Save Transcript</button>
+            </div>
+            <div id="chat-history"></div>
+            <div id="chat-input-area">
+                <div class="toggle-switch-container">
+                    <span>Witness</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="modeToggleCheckbox">
+                        <span class="slider"></span>
+                    </label>
+                    <span>Coach</span>
+                </div>
+                <textarea id="chatInput" placeholder="Choose or upload a scenario to begin..." rows="2" disabled></textarea>
+                <button id="sendButton" class="button" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="main.js"></script>
+</body>
+</html>
