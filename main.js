@@ -269,6 +269,8 @@ function initialize() {
     // Populate UI with initial state
     if (dom.apiKeyInput) dom.apiKeyInput.value = getState().apiKey;
     initializeUI();
+    updateUI(); // <-- ADD THIS LINE
+
 
     // Attach all event listeners
     dom.providerSelect?.addEventListener('change', handleProviderChange);
