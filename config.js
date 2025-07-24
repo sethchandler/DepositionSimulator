@@ -27,11 +27,14 @@ export const PROVIDERS_CONFIG = {
     openai: {
     label: "OpenAI",
     models: [
-        { name: "GPT-4.1 mini", pricing: { inputPerMillionTokens: 0.40, outputPerMillionTokens: 1.60 } },
-        { name: "GPT-4.1 nano", pricing: { inputPerMillionTokens: 0.10, outputPerMillionTokens: 0.40 } },
-        { name: "OpenAI o4-mini", pricing: { inputPerMillionTokens: 1.10, outputPerMillionTokens: 4.40 } },
-        { name: "GPT-4.1", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } },
-        { name: "OpenAI o3", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } }
+       { name: "gpt-4.1",         pricing: { inputPerMillionTokens: 2.00,  outputPerMillionTokens: 8.00  } },
+{ name: "gpt-4.1-mini",    pricing: { inputPerMillionTokens: 0.40,  outputPerMillionTokens: 1.60  } },
+{ name: "gpt-4.1-nano",    pricing: { inputPerMillionTokens: 0.10,  outputPerMillionTokens: 0.40  } },
+{ name: "gpt-4o",          pricing: { inputPerMillionTokens: 2.50,  outputPerMillionTokens: 10.00 } },
+{ name: "gpt-4o-mini",     pricing: { inputPerMillionTokens: 0.15,  outputPerMillionTokens: 0.60  } },
+{ name: "o3",              pricing: { inputPerMillionTokens: 2.00,  outputPerMillionTokens: 8.00  } },
+{ name: "o3-mini",         pricing: { inputPerMillionTokens: 1.10,  outputPerMillionTokens: 4.40  } }
+
     ],
     defaultModel: "GPT-4.1 mini",
 },
