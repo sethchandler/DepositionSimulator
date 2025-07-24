@@ -34,7 +34,7 @@ export const PROVIDERS_CONFIG = {
 { name: "o3-mini",         pricing: { inputPerMillionTokens: 1.10,  outputPerMillionTokens: 4.40  } }
 
     ],
-    defaultModel: "GPT-4.1 mini",
+    defaultModel: "gpt-4.1 mini",
 },
 
 gemini: {
