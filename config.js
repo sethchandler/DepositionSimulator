@@ -28,10 +28,10 @@ export const PROVIDERS_CONFIG = {
     label: "OpenAI",
     models: [
         { name: "GPT-4.1 mini", pricing: { inputPerMillionTokens: 0.40, outputPerMillionTokens: 1.60 } },
-        { name: "GPT-4.1 nano (Dirt cheal)", pricing: { inputPerMillionTokens: 0.10, outputPerMillionTokens: 0.40 } },
+        { name: "GPT-4.1 nano", pricing: { inputPerMillionTokens: 0.10, outputPerMillionTokens: 0.40 } },
         { name: "OpenAI o4-mini", pricing: { inputPerMillionTokens: 1.10, outputPerMillionTokens: 4.40 } },
-        { name: "GPT-4.1 (High Cost)", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } },
-        { name: "OpenAI o3 (High Cost)", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } }
+        { name: "GPT-4.1", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } },
+        { name: "OpenAI o3", pricing: { inputPerMillionTokens: 2.00, outputPerMillionTokens: 8.00 } }
     ],
     defaultModel: "GPT-4.1 mini",
 },
