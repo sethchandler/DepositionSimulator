@@ -101,18 +101,29 @@
                 <button id="saveTranscriptButton" class="button button-secondary" disabled>Save Transcript</button>
             </div>
             <div id="chat-history"></div>
-            <div id="chat-input-area">
-                <div class="toggle-switch-container">
-                    <span>Witness</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="modeToggleCheckbox">
-                        <span class="slider"></span>
-                    </label>
-                    <span>Coach</span>
-                </div>
-                <textarea id="chatInput" placeholder="Choose or upload a scenario to begin..." rows="2" disabled></textarea>
-                <button id="sendButton" class="button" disabled>Send</button>
-            </div>
+            <!-- In index.html -->
+<div id="chat-input-area">
+    <div class="toggle-switch-container">
+        <span>Witness</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="modeToggleCheckbox">
+            <span class="slider"></span>
+        </label>
+        <span>Coach</span>
+    </div>
+    <textarea id="chatInput" placeholder="Choose or upload a scenario to begin..." rows="2" disabled></textarea>
+    
+    <!-- ADD THIS NEW BUTTON -->
+    <button id="recordButton" class="button button-secondary" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="22"></line>
+        </svg>
+    </button>
+    
+    <button id="sendButton" class="button" disabled>Send</button>
+</div>
         </div>
     </div>
     
