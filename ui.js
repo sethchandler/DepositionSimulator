@@ -121,6 +121,20 @@ export function updateRecordButtonState(isRecording, isEnabled) {
     }
 }
 
+// In ui.js, add this new function
+
+export function setRecordingActive(isActive) {
+    if (!dom.chatInput) return;
+
+    if (isActive) {
+        dom.chatInput.classList.add('recording-active');
+        dom.chatInput.placeholder = "Listening... Click the mic again to stop.";
+    } else {
+        dom.chatInput.classList.remove('recording-active');
+        // The main updateUI function will restore the correct placeholder
+    }
+}
+
 
 export function updateUI() {
     const { isLoading, isOocMode, messages } = getState();
