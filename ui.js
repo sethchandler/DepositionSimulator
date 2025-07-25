@@ -129,6 +129,7 @@ export function updateUI() {
 
     // Update buttons
     if (dom.sendButton) dom.sendButton.disabled = !isScenarioLoaded || isLoading;
+    if (dom.recordButton) updateRecordButtonState(false, isScenarioLoaded && !isLoading);
     if (dom.modeToggleCheckbox) dom.modeToggleCheckbox.disabled = !isScenarioLoaded || isLoading;
     if (dom.saveTranscriptButton) dom.saveTranscriptButton.disabled = !isScenarioLoaded || isLoading || !hasHistory;
     if (dom.getSummaryButton) dom.getSummaryButton.disabled = !isScenarioLoaded || isLoading;
