@@ -6,7 +6,8 @@ import { getState, setState, getActiveWitness } from './state.js';
 import { callLlmApi, testOllamaConnection } from './api.js';
 import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError } from './ui.js';
 //import { buildDepositionPrompt, buildOocPrompt, buildSummaryPrompt, buildCaseSummaryPrompt } from './promptBuilder.js'; // We will create this file next
-
+// At the top of main.js
+import { initializeSpeech, toggleRecording, isSpeechRecognitionSupported } from './speech.js';
 // --- Event Handlers ---
 // In main.js, replace the entire handleProviderChange function with this:
 function handleProviderChange(e) {
