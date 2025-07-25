@@ -4,7 +4,7 @@ import { PROVIDERS_CONFIG } from './config.js';
 import { PRE_BUILT_SCENARIOS } from './scenarios.js';
 import { getState, setState, getActiveWitness } from './state.js';
 import { callLlmApi, testOllamaConnection } from './api.js';
-import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError, setRecordingActive } from './ui.js';
+import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError, setRecordingActive, updateRecordButtonState } from './ui.js';
 //import { buildDepositionPrompt, buildOocPrompt, buildSummaryPrompt, buildCaseSummaryPrompt } from './promptBuilder.js'; // We will create this file next
 // At the top of main.js
 import { initializeSpeech, toggleRecording, isSpeechRecognitionSupported } from './speech.js';
