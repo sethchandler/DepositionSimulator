@@ -262,7 +262,7 @@ function updateCost(usage) {
 }
 
 // --- Initialization ---
-
+// In main.js, replace the entire initialize function
 function initialize() {
     // Set initial state from localStorage if available
     const initialProviderId = dom.providerSelect.value || 'openai';
@@ -275,8 +275,27 @@ function initialize() {
     // Populate UI with initial state
     if (dom.apiKeyInput) dom.apiKeyInput.value = getState().apiKey;
     initializeUI();
-    updateUI(); // <-- ADD THIS LINE
+    updateUI();
 
+    // Initialize Speech Recognition
+    if (isSpeechRecognitionSupported()) {
+        const onTranscript = (final_transcript, interim_transcript) => {
+            // This function is called by speech.js with the transcribed text
+            const originalText = dom.chatInput.value.replace(dom.chatInput.dataset.interim || '', '');
+            dom.chatInput.value = originalText + final_transcript + interim_transcript;
+            dom.chatInput.dataset.interim = interim_transcript;
+        };
+
+        const onStateChange = (isRecording) => {
+            // This function is called by speech.js when recording starts/stops
+            updateRecordButtonState(isRecording, getActiveWitness() !== null);
+        };
+
+        initializeSpeech(onTranscript, onStateChange);
+    } else {
+        // Hide the button if the browser doesn't support the API
+        if (dom.recordButton) dom.recordButton.style.display = 'none';
+    }
 
     // Attach all event listeners
     dom.providerSelect?.addEventListener('change', handleProviderChange);
@@ -308,9 +327,11 @@ function initialize() {
     dom.getCaseSummaryButton?.addEventListener('click', () => handleGetSummary(true));
     dom.saveTranscriptButton?.addEventListener('click', handleSaveTranscript);
     dom.testOllamaConnection?.addEventListener('click', handleTestOllama);
-    
+    dom.recordButton?.addEventListener('click', toggleRecording); // Add listener for the new button
+
     console.log("Deposition Trainer Initialized.");
 }
+
 
 // Create one more file, `promptBuilder.js`, for the long prompt-building functions.
 // For now, let's put them here temporarily.
