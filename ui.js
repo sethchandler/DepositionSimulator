@@ -109,6 +109,33 @@ export function renderWitnessOptions() {
     });
 }
 
+
+export function updateRecordButtonState(isRecording) {
+    if (!dom.recordButton) return;
+    if (isRecording) {
+        dom.recordButton.classList.add('recording');
+    } else {
+        dom.recordButton.classList.remove('recording');
+    }
+}
+
+
+
+// In ui.js, add this new function
+
+export function setRecordingActive(isActive) {
+    if (!dom.chatInput) return;
+
+    if (isActive) {
+        dom.chatInput.classList.add('recording-active');
+        dom.chatInput.placeholder = "Listening... Click the mic again to stop.";
+    } else {
+        dom.chatInput.classList.remove('recording-active');
+        // The main updateUI function will restore the correct placeholder
+    }
+}
+
+
 export function updateUI() {
     const { isLoading, isOocMode, messages } = getState();
     const witness = getActiveWitness();
@@ -129,6 +156,7 @@ export function updateUI() {
 
     // Update buttons
     if (dom.sendButton) dom.sendButton.disabled = !isScenarioLoaded || isLoading;
+    if (dom.recordButton) dom.recordButton.disabled = !isScenarioLoaded || isLoading;
     if (dom.modeToggleCheckbox) dom.modeToggleCheckbox.disabled = !isScenarioLoaded || isLoading;
     if (dom.saveTranscriptButton) dom.saveTranscriptButton.disabled = !isScenarioLoaded || isLoading || !hasHistory;
     if (dom.getSummaryButton) dom.getSummaryButton.disabled = !isScenarioLoaded || isLoading;

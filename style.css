@@ -273,13 +273,16 @@
             gap: 10px;
             align-items: flex-start;
         }
-        #chatInput {
-            flex-grow: 1;
-            resize: none;
-            overflow-y: hidden;
-            line-height: 1.5;
-            font-size: 17px;
-        }
+       #chatInput {
+           flex-grow: 1;
+           resize: none;
+           overflow-y: hidden;
+           line-height: 1.5;
+           font-size: 17px;
+           min-height: 80px; /* Add this line */
+       }
+
+
         #chat-input-area #sendButton {
             width: auto;
             padding: 0 20px;
@@ -388,4 +391,51 @@
             margin: 10px 0;
             color: var(--label-color);
         }
-  
+  /* In style.css, add these rules at the end */
+
+#recordButton {
+    padding: 0;
+    width: 46px; /* Match height of send button */
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e4e6eb;
+    color: #050505;
+}
+
+#recordButton.recording {
+    background-color: #dc3545; /* Red background when recording */
+    color: white;
+}
+
+#recordButton:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+    color: #8d949e;
+}
+
+#recordButton svg {
+    width: 20px;
+    height: 20px;
+}
+/* Add these styles for the recording indicator */
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+  }
+}
+
+#recordButton.recording {
+    background-color: #dc3545; /* Red background when recording */
+    color: white;
+    animation: pulse-red 2s infinite; /* Adds the pulse effect */
+}
