@@ -388,4 +388,32 @@
             margin: 10px 0;
             color: var(--label-color);
         }
-  
+  /* In style.css, add these rules at the end */
+
+#recordButton {
+    padding: 0;
+    width: 46px; /* Match height of send button */
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e4e6eb;
+    color: #050505;
+}
+
+#recordButton.recording {
+    background-color: #dc3545; /* Red background when recording */
+    color: white;
+}
+
+#recordButton:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+    color: #8d949e;
+}
+
+#recordButton svg {
+    width: 20px;
+    height: 20px;
+}
