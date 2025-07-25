@@ -23,6 +23,7 @@ This application is a simulation for educational and entertainment purposes only
 
   * **Multi-Provider Support**: Choose between leading models from OpenAI and Google.
   * **Local LLM via Ollama**: For maximum privacy and zero cost, you can run the simulator locally using your own models via Ollama.
+  * **Submit deposition questions in writing or via speech-to-text
   * **Pre-Built Scenarios**: Jump right in with detailed, ready-to-play scenarios involving complex witnesses in criminal and civil cases.
   * **Upload Your Own Cases**: Create and upload your own single-witness or multi-witness profiles as `.json` files for customized practice.
   * **Pre-Deposition Intel**: Generate summaries of the witness's public information or the overall case facts before you begin the deposition.
@@ -60,6 +61,8 @@ The interface is designed to be used from top to bottom.
       * The chat window title will show the name of the witness you are deposing.
       * **Witness/Coach Toggle**: Keep this on "Witness" for normal questioning. Flip it to "Coach" *before* you send a message to ask for out-of-character help or hints.
       * Type your questions in the text box and click **"Send"** or press Enter.
+      * You can also click the microphone button and use speech-to-text. Click **"Send"** when you are satisfied or press Enter.
+      * The microphone will pulse red when active. Click the microphone button to revert to text-only input
 
 -----
 
