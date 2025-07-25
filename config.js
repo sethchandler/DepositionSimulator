@@ -17,6 +17,7 @@ export const DOM_ELEMENT_IDS = {
     chatInput: 'chatInput',
     sendButton: 'sendButton',
     saveTranscriptButton: 'saveTranscriptButton',
+    recordButton: 'recordButton',
     totalTokensSpan: 'totalTokens',
     estimatedCostSpan: 'estimatedCost',
     ollamaSetupInfo: 'ollamaSetupInfo',
