@@ -402,6 +402,6 @@ function buildCaseSummaryPrompt(w, d) {
         content: `You are a senior legal analyst. Your task is to provide a plausible case summary based on the provided witness dossier. The dossier contains information about ONE witness in a larger, unstated legal case.\n\nYour analysis must:\n1.  **Infer the Legal Context:** Based on the witness's role and official statements, determine the most likely type of legal case this deposition is for (e.g., "age discrimination lawsuit," "personal injury claim," "homicide prosecution").\n2.  **Synthesize a Narrative:** Create a brief narrative for the case. Who is likely suing whom? What is the central legal issue at stake?\n3.  **Use Only Provided Facts:** Base your summary ONLY on the information in the dossier. CRITICALLY, you must not mention the witness's internal thoughts, strategies, or motivations, as you have not been provided with them.\n4.  **Acknowledge Inference:** Frame your response as a plausible inference, not as established fact. For example, start with "This deposition appears to be part of..." or "The likely legal context for this witness is..."\n5.  **Adhere to Detail Level:** Provide ${di}.\n\n**Publicly Available Witness Information:**\n\`\`\`json\n${wt}\n\`\`\``
     };
 }
-
+//useless comment
 // Start the application
 document.addEventListener('DOMContentLoaded', initialize);
