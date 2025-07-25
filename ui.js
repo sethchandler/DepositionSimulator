@@ -109,6 +109,19 @@ export function renderWitnessOptions() {
     });
 }
 
+// PASTE THIS ENTIRE FUNCTION INTO ui.js
+
+export function updateRecordButtonState(isRecording, isEnabled) {
+    if (!dom.recordButton) return;
+    dom.recordButton.disabled = !isEnabled;
+    if (isRecording) {
+        dom.recordButton.classList.add('recording');
+    } else {
+        dom.recordButton.classList.remove('recording');
+    }
+}
+
+
 export function updateUI() {
     const { isLoading, isOocMode, messages } = getState();
     const witness = getActiveWitness();
