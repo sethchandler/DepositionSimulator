@@ -109,17 +109,17 @@ export function renderWitnessOptions() {
     });
 }
 
-// PASTE THIS ENTIRE FUNCTION INTO ui.js
 
-export function updateRecordButtonState(isRecording, isEnabled) {
+export function updateRecordButtonState(isRecording) {
     if (!dom.recordButton) return;
-    dom.recordButton.disabled = !isEnabled;
     if (isRecording) {
         dom.recordButton.classList.add('recording');
     } else {
         dom.recordButton.classList.remove('recording');
     }
 }
+
+
 
 // In ui.js, add this new function
 
@@ -156,7 +156,7 @@ export function updateUI() {
 
     // Update buttons
     if (dom.sendButton) dom.sendButton.disabled = !isScenarioLoaded || isLoading;
-    if (dom.recordButton) updateRecordButtonState(false, isScenarioLoaded && !isLoading);
+    if (dom.recordButton) dom.recordButton.disabled = !isScenarioLoaded || isLoading;
     if (dom.modeToggleCheckbox) dom.modeToggleCheckbox.disabled = !isScenarioLoaded || isLoading;
     if (dom.saveTranscriptButton) dom.saveTranscriptButton.disabled = !isScenarioLoaded || isLoading || !hasHistory;
     if (dom.getSummaryButton) dom.getSummaryButton.disabled = !isScenarioLoaded || isLoading;
