@@ -5,7 +5,7 @@ import { PRE_BUILT_SCENARIOS } from './scenarios.js';
 import { getState, setState, getActiveWitness } from './state.js';
 import { callLlmApi, testOllamaConnection } from './api.js';
 import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError, setRecordingActive, updateRecordButtonState } from './ui.js';
-import { buildDepositionPrompt, buildOocPrompt, buildSummaryPrompt, buildCaseSummaryPrompt } from './promptBuilder.js';
+import { depositionService } from './services/depositionService.js';
 // At the top of main.js
 import { initializeSpeech, toggleRecording, isSpeechRecognitionSupported } from './speech.js';
 // --- Event Handlers ---
@@ -116,33 +116,37 @@ async function handleSendMessage() {
     const userInput = dom.chatInput.value.trim();
     if (!userInput || getState().isLoading) return;
 
-    const { isOocMode, messages, isJudgePresent } = getState();
+    const { isOocMode, messages, isJudgePresent, providerId, apiKey, model } = getState();
     const witness = getActiveWitness();
 
-    const userMessage = { role: 'user', content: userInput, isOoc: isOocMode };
-    setState({ isLoading: true, messages: [...messages, userMessage] });
-    
+    // UI updates
+    setState({ isLoading: true });
+    clearChatInput();
     renderChatMessages();
     updateUI();
-    dom.chatInput.value = '';
-    dom.chatInput.style.height = 'auto'; // Reset height
-
-    const systemPrompt = isOocMode 
-        ? buildOocPrompt(witness, messages)
-        : buildDepositionPrompt(witness, isJudgePresent);
-    
-    const messagesForApi = [systemPrompt, ...getState().messages.slice(1)];
 
     try {
-        const { providerId, apiKey, model } = getState();
-        const { message, usage } = await callLlmApi(providerId, { apiKey, model, messages: messagesForApi });
-        message.isOoc = isOocMode;
+        // Business logic delegated to service
+        const result = await depositionService.sendMessage(
+            userInput,
+            witness,
+            messages,
+            {
+                isOocMode,
+                isJudgePresent,
+                apiConfig: { providerId, apiKey, model }
+            }
+        );
         
-        setState({ messages: [...getState().messages, message] });
-        updateCost(usage);
-    } catch (e) {
-        console.error("API Error:", e);
-        displayError(e.message);
+        // Handle results - update state
+        setState({ 
+            messages: [...getState().messages, result.userMessage, result.assistantMessage]
+        });
+        updateCost(result.usage);
+        
+    } catch (error) {
+        console.error("Deposition Error:", error);
+        displayError(error.message);
     } finally {
         setState({ isLoading: false });
         renderChatMessages();
@@ -154,28 +158,28 @@ async function handleSendMessage() {
 async function handleGetSummary(isCaseSummary = false) {
     if (getState().isLoading) return;
 
+    const witness = getActiveWitness();
+    const detailLevel = dom.summaryDetailSlider.value;
+    const { providerId, apiKey, model } = getState();
+
+    // UI updates
     setState({ isLoading: true });
     renderChatMessages();
     updateUI();
-
-    const witness = getActiveWitness();
-    const detailLevel = dom.summaryDetailSlider.value;
-    
-    const summaryPrompt = isCaseSummary
-        ? buildCaseSummaryPrompt(witness, detailLevel)
-        : buildSummaryPrompt(witness, detailLevel);
     
     try {
-        const { providerId, apiKey, model } = getState();
-        // Summaries are meta-operations, so we can use a simple message array
-        const { message, usage } = await callLlmApi(providerId, { apiKey, model, messages: [summaryPrompt] });
-        message.isOoc = true; // Summaries are always out-of-character
+        // Business logic delegated to service
+        const result = isCaseSummary
+            ? await depositionService.generateCaseSummary(witness, detailLevel, { providerId, apiKey, model })
+            : await depositionService.generateWitnessSummary(witness, detailLevel, { providerId, apiKey, model });
 
-        setState({ messages: [...getState().messages, message] });
-        updateCost(usage);
-    } catch(e) {
-        console.error("Summary API Error:", e);
-        displayError(e.message);
+        // Handle results - update state
+        setState({ messages: [...getState().messages, result.message] });
+        updateCost(result.usage);
+        
+    } catch (error) {
+        console.error("Summary Error:", error);
+        displayError(error.message);
     } finally {
         setState({ isLoading: false });
         renderChatMessages();
@@ -216,6 +220,11 @@ function handleSaveTranscript() {
 
 // --- Helper Functions ---
 
+function clearChatInput() {
+    dom.chatInput.value = '';
+    dom.chatInput.style.height = 'auto'; // Reset height
+}
+
 function loadWitnessData(data) {
     const witnesses = Array.isArray(data.witnesses) ? data.witnesses : [data];
     setState({
@@ -230,7 +239,12 @@ function loadWitnessData(data) {
 function resetChat() {
     const witness = getActiveWitness();
     const { isJudgePresent } = getState();
-    const systemPrompt = witness ? buildDepositionPrompt(witness, isJudgePresent) : null;
+    
+    // Use service to build system prompt if witness exists
+    let systemPrompt = null;
+    if (witness) {
+        systemPrompt = depositionService.buildSystemPrompt(witness, [], false, isJudgePresent);
+    }
     
     setState({
         messages: systemPrompt ? [systemPrompt] : [],
