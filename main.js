@@ -6,6 +6,7 @@ import { getState, setState, getActiveWitness } from './state.js';
 import { callLlmApi, testOllamaConnection } from './api.js';
 import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError, setRecordingActive, updateRecordButtonState } from './ui.js';
 import { depositionService } from './services/depositionService.js';
+import { handleError } from './utils/errorHandler.js';
 // At the top of main.js
 import { initializeSpeech, toggleRecording, isSpeechRecognitionSupported } from './speech.js';
 // --- Event Handlers ---
@@ -65,8 +66,8 @@ function handleFileLoad(e) {
             loadWitnessData(caseData);
             if (dom.scenarioSelector) dom.scenarioSelector.value = "-1";
         } catch (err) {
-            console.error("File Load Error:", err);
-            displayError(`Failed to load file. ${err.message}`);
+            const errorInfo = handleError(err, 'handleFileLoad');
+            displayError(`Failed to load file: ${errorInfo.userMessage}`);
         }
     };
     reader.readAsText(file);
@@ -82,8 +83,8 @@ function handleScenarioChange(e) {
             loadWitnessData(jsonData);
             if (dom.fileLoaderInput) dom.fileLoaderInput.value = ""; // Clear file input
         } catch (err) {
-            console.error("Scenario Load Error:", err);
-            displayError("Failed to load pre-built scenario. It might be corrupted.");
+            const errorInfo = handleError(err, 'handleScenarioChange');
+            displayError(`Failed to load scenario: ${errorInfo.userMessage}`);
         }
     }
 }
@@ -102,7 +103,8 @@ async function handleTestOllama() {
     } catch (e) {
         button.textContent = '❌ Connection Failed';
         button.style.backgroundColor = '#dc3545';
-        displayError(e.message);
+        const errorInfo = handleError(e, 'handleTestOllama');
+        displayError(errorInfo.userMessage);
     } finally {
         setTimeout(() => {
             button.textContent = originalText;
@@ -145,8 +147,8 @@ async function handleSendMessage() {
         updateCost(result.usage);
         
     } catch (error) {
-        console.error("Deposition Error:", error);
-        displayError(error.message);
+        const errorInfo = handleError(error, 'handleSendMessage');
+        displayError(errorInfo.userMessage);
     } finally {
         setState({ isLoading: false });
         renderChatMessages();
@@ -178,8 +180,8 @@ async function handleGetSummary(isCaseSummary = false) {
         updateCost(result.usage);
         
     } catch (error) {
-        console.error("Summary Error:", error);
-        displayError(error.message);
+        const errorInfo = handleError(error, 'handleGetSummary');
+        displayError(errorInfo.userMessage);
     } finally {
         setState({ isLoading: false });
         renderChatMessages();

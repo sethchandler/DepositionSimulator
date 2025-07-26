@@ -2,6 +2,13 @@
 
 import { buildDepositionPrompt, buildOocPrompt, buildSummaryPrompt, buildCaseSummaryPrompt } from '../promptBuilder.js';
 import { callLlmApi } from '../api.js';
+import { 
+    ValidationError, 
+    ConfigurationError, 
+    APIError,
+    ErrorCodes,
+    handleError 
+} from '../utils/errorHandler.js';
 
 /**
  * Domain service encapsulating all deposition-related business logic.
@@ -21,13 +28,48 @@ export class DepositionService {
      * @returns {Promise<Object>} Result containing userMessage, assistantMessage, and usage
      */
     async sendMessage(userInput, witness, messageHistory, config) {
-        if (!userInput || !userInput.trim()) {
-            throw new Error('User input is required');
+        // Validate input
+        if (!userInput || typeof userInput !== 'string' || !userInput.trim()) {
+            throw new ValidationError(
+                'User input is required and must be a non-empty string',
+                'userInput',
+                userInput
+            );
         }
         
-        if (!witness) {
-            throw new Error('Witness data is required');
+        if (!witness || typeof witness !== 'object') {
+            throw new ValidationError(
+                'Witness data is required and must be a valid object',
+                'witness',
+                witness
+            );
         }
+        
+        // Validate witness structure
+        if (!witness.witnessBackground?.personalDetails?.fullName && !witness.name) {
+            throw new ValidationError(
+                'Witness data must contain valid background information',
+                'witness.witnessBackground',
+                null
+            ).markConfidential();
+        }
+        
+        // Validate configuration
+        if (!config || typeof config !== 'object') {
+            throw new ConfigurationError(
+                'Configuration object is required',
+                'config'
+            );
+        }
+        
+        if (!config.apiConfig) {
+            throw new ConfigurationError(
+                'API configuration is required',
+                'apiConfig'
+            );
+        }
+        
+        this.validateApiConfig(config.apiConfig);
         
         // Create user message
         const userMessage = this.createUserMessage(userInput, config.isOocMode);
@@ -43,12 +85,28 @@ export class DepositionService {
         // Prepare messages for API
         const messagesForApi = this.prepareMessagesForApi(systemPrompt, messageHistory, userMessage);
         
-        // Call LLM API
-        const { message, usage } = await callLlmApi(config.apiConfig.providerId, {
-            apiKey: config.apiConfig.apiKey,
-            model: config.apiConfig.model,
-            messages: messagesForApi
-        });
+        // Call LLM API with enhanced error handling
+        let apiResponse;
+        try {
+            apiResponse = await callLlmApi(config.apiConfig.providerId, {
+                apiKey: config.apiConfig.apiKey,
+                model: config.apiConfig.model,
+                messages: messagesForApi
+            });
+        } catch (error) {
+            // Re-throw with context
+            if (error instanceof APIError || error instanceof ConfigurationError) {
+                throw error;
+            }
+            throw new APIError(
+                'Failed to get response from AI provider',
+                config.apiConfig.providerId,
+                null,
+                error
+            );
+        }
+        
+        const { message, usage } = apiResponse;
         
         // Mark message with mode
         message.isOoc = config.isOocMode;
@@ -68,17 +126,47 @@ export class DepositionService {
      * @returns {Promise<Object>} Result containing the summary message and usage
      */
     async generateWitnessSummary(witness, detailLevel, apiConfig) {
-        if (!witness) {
-            throw new Error('Witness data is required');
+        // Validate inputs
+        if (!witness || typeof witness !== 'object') {
+            throw new ValidationError(
+                'Witness data is required and must be a valid object',
+                'witness',
+                witness
+            );
         }
+        
+        if (!detailLevel || ![1, 2, 3].includes(Number(detailLevel))) {
+            throw new ValidationError(
+                'Detail level must be 1, 2, or 3',
+                'detailLevel',
+                detailLevel
+            );
+        }
+        
+        this.validateApiConfig(apiConfig);
         
         const summaryPrompt = buildSummaryPrompt(witness, detailLevel);
         
-        const { message, usage } = await callLlmApi(apiConfig.providerId, {
-            apiKey: apiConfig.apiKey,
-            model: apiConfig.model,
-            messages: [summaryPrompt]
-        });
+        let apiResponse;
+        try {
+            apiResponse = await callLlmApi(apiConfig.providerId, {
+                apiKey: apiConfig.apiKey,
+                model: apiConfig.model,
+                messages: [summaryPrompt]
+            });
+        } catch (error) {
+            if (error instanceof APIError || error instanceof ConfigurationError) {
+                throw error;
+            }
+            throw new APIError(
+                'Failed to generate witness summary',
+                apiConfig.providerId,
+                null,
+                error
+            );
+        }
+        
+        const { message, usage } = apiResponse;
         
         // Summaries are always out-of-character
         message.isOoc = true;
@@ -97,17 +185,47 @@ export class DepositionService {
      * @returns {Promise<Object>} Result containing the summary message and usage
      */
     async generateCaseSummary(witness, detailLevel, apiConfig) {
-        if (!witness) {
-            throw new Error('Witness data is required');
+        // Validate inputs
+        if (!witness || typeof witness !== 'object') {
+            throw new ValidationError(
+                'Witness data is required and must be a valid object',
+                'witness',
+                witness
+            );
         }
+        
+        if (!detailLevel || ![1, 2, 3].includes(Number(detailLevel))) {
+            throw new ValidationError(
+                'Detail level must be 1, 2, or 3',
+                'detailLevel',
+                detailLevel
+            );
+        }
+        
+        this.validateApiConfig(apiConfig);
         
         const caseSummaryPrompt = buildCaseSummaryPrompt(witness, detailLevel);
         
-        const { message, usage } = await callLlmApi(apiConfig.providerId, {
-            apiKey: apiConfig.apiKey,
-            model: apiConfig.model,
-            messages: [caseSummaryPrompt]
-        });
+        let apiResponse;
+        try {
+            apiResponse = await callLlmApi(apiConfig.providerId, {
+                apiKey: apiConfig.apiKey,
+                model: apiConfig.model,
+                messages: [caseSummaryPrompt]
+            });
+        } catch (error) {
+            if (error instanceof APIError || error instanceof ConfigurationError) {
+                throw error;
+            }
+            throw new APIError(
+                'Failed to generate case summary',
+                apiConfig.providerId,
+                null,
+                error
+            );
+        }
+        
+        const { message, usage } = apiResponse;
         
         // Case summaries are always out-of-character
         message.isOoc = true;
@@ -172,23 +290,37 @@ export class DepositionService {
      * @throws {Error} If configuration is invalid
      */
     validateApiConfig(apiConfig) {
-        if (!apiConfig) {
-            throw new Error('API configuration is required');
+        if (!apiConfig || typeof apiConfig !== 'object') {
+            throw new ConfigurationError(
+                'API configuration object is required',
+                'apiConfig'
+            );
         }
         
-        const { providerId, model } = apiConfig;
+        const { providerId, model, apiKey } = apiConfig;
         
-        if (!providerId) {
-            throw new Error('Provider ID is required');
+        if (!providerId || typeof providerId !== 'string') {
+            throw new ConfigurationError(
+                'Provider ID is required and must be a string',
+                'providerId'
+            );
         }
         
-        if (!model) {
-            throw new Error('Model is required');
+        if (!model || typeof model !== 'string') {
+            throw new ConfigurationError(
+                'Model name is required and must be a string',
+                'model'
+            );
         }
         
         // API key validation (except for Ollama)
-        if (providerId !== 'ollama' && !apiConfig.apiKey) {
-            throw new Error('API key is required for this provider');
+        if (providerId !== 'ollama') {
+            if (!apiKey || typeof apiKey !== 'string' || apiKey.trim().length === 0) {
+                throw new ConfigurationError(
+                    'API key is required for this provider',
+                    'apiKey'
+                ).markConfidential();
+            }
         }
     }
 }
