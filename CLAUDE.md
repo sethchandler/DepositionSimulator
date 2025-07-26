@@ -31,6 +31,7 @@ The application follows a modular ES6 architecture with clear separation of conc
 | File | Purpose |
 |------|---------|
 | `main.js` | Main entry point, event handlers, and application initialization |
+| `promptBuilder.js` | Prompt engineering logic for all LLM interactions |
 | `state.js` | Global state management with immutable update pattern |
 | `api.js` | LLM API abstraction layer for OpenAI, Gemini, and Ollama |
 | `config.js` | Configuration constants, provider settings, and DOM element IDs |
@@ -75,11 +76,13 @@ The application uses sophisticated prompt engineering with multiple roles:
 - **Judge**: Optional role for ruling on objections
 - **Coach Mode**: Out-of-character assistance for users
 
-Prompts are built dynamically in `main.js` functions:
-- `buildDepositionPrompt()`: Main witness interaction
-- `buildOocPrompt()`: Out-of-character coaching
-- `buildSummaryPrompt()`: Pre-deposition intel
-- `buildCaseSummaryPrompt()`: Case context analysis
+Prompts are built dynamically in `promptBuilder.js` with exported functions:
+- `buildDepositionPrompt()`: Main witness interaction with multiple roles
+- `buildOocPrompt()`: Out-of-character coaching and hints
+- `buildSummaryPrompt()`: Pre-deposition intel from public information
+- `buildCaseSummaryPrompt()`: Case context analysis and legal inference
+
+All prompt functions are pure functions that take witness data and configuration parameters, returning formatted message objects for the LLM APIs.
 
 ### Speech Integration
 - Browser speech recognition API wrapper in `speech.js`
