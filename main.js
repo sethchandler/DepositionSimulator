@@ -4,20 +4,72 @@ import { PROVIDERS_CONFIG } from './config.js';
 import { PRE_BUILT_SCENARIOS } from './scenarios.js';
 import { getState, setState, getActiveWitness } from './state.js';
 import { callLlmApi, testOllamaConnection } from './api.js';
-import { dom, initializeUI, renderModelOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError, setRecordingActive, updateRecordButtonState } from './ui.js';
+import { dom, initializeUI, initializeDOMElements, renderModelOptions, renderPresetOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError, setRecordingActive, updateRecordButtonState } from './ui.js';
 import { depositionService } from './services/depositionService.js';
 import { handleError } from './utils/errorHandler.js';
 // At the top of main.js
 import { initializeSpeech, toggleRecording, isSpeechRecognitionSupported } from './speech.js';
+import { getPresetInstruction } from './prompts/presets.js';
+// Document system imports
+import { initializeDocumentUI, updateDocumentUI, getDocumentContextForQuestion, clearActiveDocumentContexts } from './ui/documentUI.js';
+
+// --- Security Utilities ---
+/**
+ * Basic obfuscation for API keys stored in localStorage.
+ * Note: This is not true encryption, just basic obfuscation for casual protection.
+ * @param {string} key - API key to obfuscate
+ * @returns {string} Obfuscated key
+ */
+function obfuscateApiKey(key) {
+    if (!key) return '';
+    try {
+        // Simple obfuscation: base64 encode + reverse + add padding
+        const encoded = btoa(key);
+        const reversed = encoded.split('').reverse().join('');
+        return 'obf_' + reversed + '_end';
+    } catch (error) {
+        console.warn('Failed to obfuscate API key:', error);
+        return key; // Fallback to plain text if obfuscation fails
+    }
+}
+
+/**
+ * Deobfuscates API keys from localStorage.
+ * @param {string} obfuscatedKey - Obfuscated key to restore
+ * @returns {string} Original API key
+ */
+function deobfuscateApiKey(obfuscatedKey) {
+    if (!obfuscatedKey) return '';
+    
+    // Check if it's obfuscated format
+    if (!obfuscatedKey.startsWith('obf_') || !obfuscatedKey.endsWith('_end')) {
+        // Not obfuscated, return as-is (backward compatibility)
+        return obfuscatedKey;
+    }
+    
+    try {
+        // Remove prefix and suffix
+        const encoded = obfuscatedKey.slice(4, -4);
+        // Reverse and decode
+        const reversed = encoded.split('').reverse().join('');
+        return atob(reversed);
+    } catch (error) {
+        console.warn('Failed to deobfuscate API key:', error);
+        return ''; // Return empty string if deobfuscation fails
+    }
+}
 // --- Event Handlers ---
 // In main.js, replace the entire handleProviderChange function with this:
 function handleProviderChange(e) {
     const providerId = e.target.value;
     const newProviderConfig = PROVIDERS_CONFIG[providerId]; // Get the new provider's config
     
+    const storedKey = localStorage.getItem(`llm_${providerId}_key`) || '';
+    const deobfuscatedKey = deobfuscateApiKey(storedKey);
+    
     setState({
         providerId: providerId,
-        apiKey: localStorage.getItem(`llm_${providerId}_key`) || '',
+        apiKey: deobfuscatedKey,
         model: newProviderConfig.defaultModel // Set the model to the new default
     });
 
@@ -38,7 +90,10 @@ function handleApiKeyChange(e) {
     const { providerId } = getState();
     const apiKey = e.target.value;
     setState({ apiKey });
-    localStorage.setItem(`llm_${providerId}_key`, apiKey);
+    
+    // Store obfuscated version in localStorage for basic protection
+    const obfuscatedKey = obfuscateApiKey(apiKey);
+    localStorage.setItem(`llm_${providerId}_key`, obfuscatedKey);
 }
 
 function handleModelChange(e) {
@@ -49,6 +104,126 @@ function handleModelChange(e) {
 function handleJudgeModeChange(e) {
     setState({ isJudgePresent: e.target.checked });
     resetChat();
+}
+
+// Advanced prompt setting handlers
+function handleAdvancedToggle() {
+    const advancedSettings = dom.advancedSettings;
+    const toggleText = dom.advancedToggleText;
+    
+    if (advancedSettings.style.display === 'none') {
+        advancedSettings.style.display = 'block';
+        toggleText.textContent = '▼ Advanced Prompt Settings';
+    } else {
+        advancedSettings.style.display = 'none';
+        toggleText.textContent = '▶ Advanced Prompt Settings';
+    }
+}
+
+function handlePresetChange(role, presetSelect, customTextarea) {
+    const presetKey = presetSelect.value;
+    const instruction = getPresetInstruction(role, presetKey);
+    
+    // Update the custom textarea with the preset instruction
+    customTextarea.value = instruction;
+    
+    // Update state
+    const stateUpdate = {};
+    stateUpdate[`${role}Preset`] = presetKey;
+    stateUpdate[`${role}Custom`] = instruction;
+    setState(stateUpdate);
+    
+    // Don't reset chat - allow mid-deposition personality changes
+    // Only update UI to reflect new settings
+    updateUI();
+}
+
+function handleCustomPromptChange(role, textarea) {
+    const stateUpdate = {};
+    stateUpdate[`${role}Custom`] = textarea.value;
+    setState(stateUpdate);
+    
+    // Don't reset chat - allow mid-deposition personality changes
+    // Only update UI to reflect new settings
+    updateUI();
+}
+
+async function handlePromptFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async function(event) {
+        try {
+            const fileContent = event.target.result;
+            let parsedInstructions;
+            
+            // Check if it's JSON or plain text
+            if (file.name.endsWith('.json')) {
+                // Handle JSON files (legacy format)
+                const promptConfig = JSON.parse(fileContent);
+                parsedInstructions = {
+                    judgeInstructions: promptConfig.judgeCustom || null,
+                    counselInstructions: promptConfig.counselCustom || null,
+                    rulesInstructions: promptConfig.rulesCustom || null
+                };
+            } else {
+                // Handle text/markdown files - use AI to parse
+                const { parseCustomInstructions } = await import('./promptBuilder.js');
+                parsedInstructions = await parseCustomInstructions(fileContent);
+            }
+            
+            // Update UI with parsed instructions
+            if (parsedInstructions.judgeInstructions && dom.judgeCustom) {
+                dom.judgeCustom.value = parsedInstructions.judgeInstructions;
+            }
+            if (parsedInstructions.counselInstructions && dom.counselCustom) {
+                dom.counselCustom.value = parsedInstructions.counselInstructions;
+            }
+            if (parsedInstructions.rulesInstructions && dom.rulesCustom) {
+                dom.rulesCustom.value = parsedInstructions.rulesInstructions;
+            }
+            
+            // Update state
+            setState({
+                judgeCustom: parsedInstructions.judgeInstructions || getState().judgeCustom || '',
+                counselCustom: parsedInstructions.counselInstructions || getState().counselCustom || '',
+                rulesCustom: parsedInstructions.rulesInstructions || getState().rulesCustom || ''
+            });
+            
+            resetChat();
+            
+            // Show success message
+            const roleCount = [parsedInstructions.judgeInstructions, parsedInstructions.counselInstructions, parsedInstructions.rulesInstructions].filter(Boolean).length;
+            console.log(`Successfully parsed instructions for ${roleCount} role(s)`);
+            
+        } catch (error) {
+            console.error('Error processing prompt file:', error);
+            displayError('Unable to process the uploaded file. Please check the format and try again.');
+        }
+    };
+    reader.readAsText(file);
+}
+
+function handleExportPrompts() {
+    const state = getState();
+    const promptConfig = {
+        judgeCustom: state.judgeCustom || '',
+        counselCustom: state.counselCustom || '',
+        rulesCustom: state.rulesCustom || ''
+    };
+    
+    const blob = new Blob([JSON.stringify(promptConfig, null, 2)], 
+                         { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'deposition-prompts.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 function handleFileLoad(e) {
@@ -121,11 +296,15 @@ async function handleSendMessage() {
     const { isOocMode, messages, isJudgePresent, providerId, apiKey, model } = getState();
     const witness = getActiveWitness();
 
+    // Check for document references and get context
+    const documentContexts = getDocumentContextForQuestion(userInput);
+
     // UI updates
     setState({ isLoading: true });
     clearChatInput();
     renderChatMessages();
     updateUI();
+    updateDocumentUI(); // Update document UI to show active documents
 
     try {
         // Business logic delegated to service
@@ -136,7 +315,13 @@ async function handleSendMessage() {
             {
                 isOocMode,
                 isJudgePresent,
-                apiConfig: { providerId, apiKey, model }
+                apiConfig: { providerId, apiKey, model },
+                customPrompts: {
+                    judgeCustom: getState().judgeCustom,
+                    counselCustom: getState().counselCustom,
+                    rulesCustom: getState().rulesCustom
+                },
+                documentContexts // Pass document contexts to service
             }
         );
         
@@ -146,13 +331,19 @@ async function handleSendMessage() {
         });
         updateCost(result.usage);
         
+        // Clear active document contexts after response
+        clearActiveDocumentContexts();
+        
     } catch (error) {
         const errorInfo = handleError(error, 'handleSendMessage');
         displayError(errorInfo.userMessage);
+        // Clear active contexts on error too
+        clearActiveDocumentContexts();
     } finally {
         setState({ isLoading: false });
         renderChatMessages();
         updateUI();
+        updateDocumentUI();
         dom.chatInput.focus();
     }
 }
@@ -280,17 +471,24 @@ function updateCost(usage) {
 // --- Initialization ---
 // In main.js, replace the entire initialize function
 function initialize() {
-    // Set initial state from localStorage if available
+    // First populate the UI so dropdowns have options
+    initializeUI();
+    initializeDocumentUI();
+    renderPresetOptions();
+    
+    // Then set initial state from localStorage if available
     const initialProviderId = dom.providerSelect.value || 'openai';
+    const storedKey = localStorage.getItem(`llm_${initialProviderId}_key`) || '';
+    const deobfuscatedKey = deobfuscateApiKey(storedKey);
+    
     setState({
         providerId: initialProviderId,
-        apiKey: localStorage.getItem(`llm_${initialProviderId}_key`) || '',
+        apiKey: deobfuscatedKey,
         model: PROVIDERS_CONFIG[initialProviderId]?.defaultModel || ''
     });
 
     // Populate UI with initial state
     if (dom.apiKeyInput) dom.apiKeyInput.value = getState().apiKey;
-    initializeUI();
     updateUI();
 
     // Initialize Speech Recognition
@@ -324,6 +522,12 @@ function initialize() {
     dom.apiKeyInput?.addEventListener('change', handleApiKeyChange);
     dom.modelSelect?.addEventListener('change', handleModelChange);
     dom.judgeModeCheckbox?.addEventListener('change', handleJudgeModeChange);
+    // Also add click handler to the checkbox container for better UX
+    dom.judgeModeCheckbox?.parentElement?.addEventListener('click', (e) => {
+        if (e.target !== dom.judgeModeCheckbox) {
+            dom.judgeModeCheckbox.click();
+        }
+    });
     dom.fileLoaderInput?.addEventListener('change', handleFileLoad);
     dom.scenarioSelector?.addEventListener('change', handleScenarioChange);
     dom.witnessSelector?.addEventListener('change', (e) => {
@@ -350,6 +554,29 @@ function initialize() {
     dom.saveTranscriptButton?.addEventListener('click', handleSaveTranscript);
     dom.testOllamaConnection?.addEventListener('click', handleTestOllama);
     dom.recordButton?.addEventListener('click', toggleRecording); // Add listener for the new button
+    
+    // Advanced prompt settings event listeners
+    dom.advancedToggle?.addEventListener('click', handleAdvancedToggle);
+    
+    // Preset change handlers
+    dom.judgePreset?.addEventListener('change', () => 
+        handlePresetChange('judge', dom.judgePreset, dom.judgeCustom));
+    dom.counselPreset?.addEventListener('change', () => 
+        handlePresetChange('opposingCounsel', dom.counselPreset, dom.counselCustom));
+    dom.rulesPreset?.addEventListener('change', () => 
+        handlePresetChange('rules', dom.rulesPreset, dom.rulesCustom));
+    
+    // Custom prompt change handlers
+    dom.judgeCustom?.addEventListener('change', () => 
+        handleCustomPromptChange('judge', dom.judgeCustom));
+    dom.counselCustom?.addEventListener('change', () => 
+        handleCustomPromptChange('counsel', dom.counselCustom));
+    dom.rulesCustom?.addEventListener('change', () => 
+        handleCustomPromptChange('rules', dom.rulesCustom));
+    
+    // Import/export handlers
+    dom.promptFile?.addEventListener('change', handlePromptFileUpload);
+    dom.exportPrompts?.addEventListener('click', handleExportPrompts);
 
     console.log("Deposition Trainer Initialized.");
 }

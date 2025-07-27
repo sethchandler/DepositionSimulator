@@ -9,6 +9,11 @@ import {
     ErrorCodes,
     handleError 
 } from '../utils/errorHandler.js';
+import { 
+    getDocumentAwareCounselInstructions,
+    getDocumentAwareJudgeInstructions,
+    generateDocumentContextPrompt
+} from '../prompts/documentPrompts.js';
 
 /**
  * Domain service encapsulating all deposition-related business logic.
@@ -25,6 +30,7 @@ export class DepositionService {
      * @param {boolean} config.isOocMode - Whether in out-of-character coaching mode
      * @param {boolean} config.isJudgePresent - Whether a judge is present
      * @param {Object} config.apiConfig - API configuration (providerId, apiKey, model)
+     * @param {Array} config.documentContexts - Array of document contents for context injection
      * @returns {Promise<Object>} Result containing userMessage, assistantMessage, and usage
      */
     async sendMessage(userInput, witness, messageHistory, config) {
@@ -79,7 +85,9 @@ export class DepositionService {
             witness, 
             messageHistory, 
             config.isOocMode, 
-            config.isJudgePresent
+            config.isJudgePresent,
+            config.customPrompts,
+            config.documentContexts
         );
         
         // Prepare messages for API
@@ -257,13 +265,40 @@ export class DepositionService {
      * @param {Array} messageHistory - Previous messages for context
      * @param {boolean} isOocMode - Whether in coaching mode
      * @param {boolean} isJudgePresent - Whether a judge is present
+     * @param {Object} customPrompts - Custom prompt instructions
      * @returns {Object} System prompt message
      */
-    buildSystemPrompt(witness, messageHistory, isOocMode, isJudgePresent) {
+    buildSystemPrompt(witness, messageHistory, isOocMode, isJudgePresent, customPrompts = {}, documentContexts = []) {
         if (isOocMode) {
             return buildOocPrompt(witness, messageHistory);
         } else {
-            return buildDepositionPrompt(witness, isJudgePresent);
+            // Enhance custom prompts with document-aware instructions if documents are present
+            const enhancedCustomPrompts = { ...customPrompts };
+            
+            if (documentContexts && documentContexts.length > 0) {
+                // Add document-aware counsel instructions
+                if (!enhancedCustomPrompts.counselCustom) {
+                    enhancedCustomPrompts.counselCustom = getDocumentAwareCounselInstructions([]);
+                } else {
+                    enhancedCustomPrompts.counselCustom += getDocumentAwareCounselInstructions([]);
+                }
+                
+                // Add document-aware judge instructions  
+                if (isJudgePresent && !enhancedCustomPrompts.judgeCustom) {
+                    enhancedCustomPrompts.judgeCustom = getDocumentAwareJudgeInstructions([]);
+                } else if (isJudgePresent) {
+                    enhancedCustomPrompts.judgeCustom += getDocumentAwareJudgeInstructions([]);
+                }
+            }
+            
+            const basePrompt = buildDepositionPrompt(witness, isJudgePresent, enhancedCustomPrompts);
+            
+            // Inject document contexts if present
+            if (documentContexts && documentContexts.length > 0) {
+                basePrompt.content += '\n\n' + documentContexts.join('\n\n');
+            }
+            
+            return basePrompt;
         }
     }
     

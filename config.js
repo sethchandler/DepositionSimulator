@@ -7,6 +7,15 @@ export const DOM_ELEMENT_IDS = {
     scenarioSelector: 'scenarioSelector',
     witnessSelectorCard: 'witnessSelectorCard',
     witnessSelector: 'witnessSelector',
+    // Document system elements
+    documentCard: 'documentCard',
+    documentUpload: 'documentUpload',
+    documentList: 'documentList',
+    documentTokenCount: 'documentTokenCount',
+    documentTokenLimit: 'documentTokenLimit',
+    documentTokenBar: 'documentTokenBar',
+    uploadButton: 'uploadButton',
+    // Other elements
     intelCard: 'intelCard',
     summaryDetailSlider: 'summaryDetailSlider',
     getSummaryButton: 'getSummaryButton',
@@ -21,31 +30,41 @@ export const DOM_ELEMENT_IDS = {
     totalTokensSpan: 'totalTokens',
     estimatedCostSpan: 'estimatedCost',
     ollamaSetupInfo: 'ollamaSetupInfo',
-    testOllamaConnection: 'testOllamaConnection'
+    testOllamaConnection: 'testOllamaConnection',
+    // Advanced prompt controls
+    advancedToggle: 'advancedToggle',
+    advancedToggleText: 'advancedToggleText',
+    advancedSettings: 'advancedSettings',
+    judgePreset: 'judgePreset',
+    judgeCustom: 'judgeCustom',
+    counselPreset: 'counselPreset',
+    counselCustom: 'counselCustom',
+    rulesPreset: 'rulesPreset',
+    rulesCustom: 'rulesCustom',
+    promptFile: 'promptFile',
+    exportPrompts: 'exportPrompts'
 };
 
 export const PROVIDERS_CONFIG = {
     openai: {
-    label: "OpenAI",
-    models: [
-{ name: "gpt-4.1-mini",    pricing: { inputPerMillionTokens: 0.40,  outputPerMillionTokens: 1.60  } },
-{ name: "gpt-4.1-nano",    pricing: { inputPerMillionTokens: 0.10,  outputPerMillionTokens: 0.40  } },
-{ name: "gpt-4o",          pricing: { inputPerMillionTokens: 2.50,  outputPerMillionTokens: 10.00 } },
-{ name: "gpt-4o-mini",     pricing: { inputPerMillionTokens: 0.15,  outputPerMillionTokens: 0.60  } },
-{ name: "o3-mini",         pricing: { inputPerMillionTokens: 1.10,  outputPerMillionTokens: 4.40  } }
-
-    ],
-    defaultModel: "gpt-4.1-mini",
-},
-
-gemini: {
-    label: "Google Gemini",
-    models: [
-        { name: "gemini-2.5-flash", pricing: { inputPerMillionTokens: 0.35, outputPerMillionTokens: 0.70 } },
-        { name: "gemini-2.5-pro", pricing: { inputPerMillionTokens: 3.50, outputPerMillionTokens: 10.50 } }
-    ],
-    defaultModel: "gemini-2.5-flash",
-},
+        label: "OpenAI",
+        models: [
+            { name: "gpt-4.1-mini",    pricing: { inputPerMillionTokens: 0.40,  outputPerMillionTokens: 1.60  } },
+            { name: "gpt-4.1-nano",    pricing: { inputPerMillionTokens: 0.10,  outputPerMillionTokens: 0.40  } },
+            { name: "gpt-4o",          pricing: { inputPerMillionTokens: 2.50,  outputPerMillionTokens: 10.00 } },
+            { name: "gpt-4o-mini",     pricing: { inputPerMillionTokens: 0.15,  outputPerMillionTokens: 0.60  } },
+            { name: "o3-mini",         pricing: { inputPerMillionTokens: 1.10,  outputPerMillionTokens: 4.40  } }
+        ],
+        defaultModel: "gpt-4.1-mini",
+    },
+    gemini: {
+        label: "Google Gemini",
+        models: [
+            { name: "gemini-2.5-flash", pricing: { inputPerMillionTokens: 0.35, outputPerMillionTokens: 0.70 } },
+            { name: "gemini-2.5-pro", pricing: { inputPerMillionTokens: 3.50, outputPerMillionTokens: 10.50 } }
+        ],
+        defaultModel: "gemini-2.5-flash",
+    },
     ollama: {
         label: "Ollama (Local - Privacy Mode)",
         requiresSetup: true,
