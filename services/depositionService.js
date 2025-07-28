@@ -81,7 +81,7 @@ export class DepositionService {
         const userMessage = this.createUserMessage(userInput, config.isOocMode);
         
         // Build system prompt based on mode
-        const systemPrompt = this.buildSystemPrompt(
+        const systemPrompt = await this.buildSystemPrompt(
             witness, 
             messageHistory, 
             config.isOocMode, 
@@ -268,7 +268,7 @@ export class DepositionService {
      * @param {Object} customPrompts - Custom prompt instructions
      * @returns {Object} System prompt message
      */
-    buildSystemPrompt(witness, messageHistory, isOocMode, isJudgePresent, customPrompts = {}, documentContexts = []) {
+    async buildSystemPrompt(witness, messageHistory, isOocMode, isJudgePresent, customPrompts = {}, documentContexts = []) {
         if (isOocMode) {
             return buildOocPrompt(witness, messageHistory);
         } else {
@@ -291,7 +291,7 @@ export class DepositionService {
                 }
             }
             
-            const basePrompt = buildDepositionPrompt(witness, isJudgePresent, enhancedCustomPrompts);
+            const basePrompt = await buildDepositionPrompt(witness, isJudgePresent, enhancedCustomPrompts);
             
             // Inject document contexts if present
             if (documentContexts && documentContexts.length > 0) {

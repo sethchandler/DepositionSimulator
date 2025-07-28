@@ -2,6 +2,8 @@
 
 import { documentService } from '../services/documentService.js';
 import { handleError } from '../utils/errorHandler.js';
+import { documentDashboard } from './documentDashboard.js';
+import { documentViewer } from './documentViewer.js';
 
 // DOM element references (will be populated by initializeDocumentUI)
 export const documentDOM = {};
@@ -18,6 +20,11 @@ export function initializeDocumentUI() {
     documentDOM.documentTokenLimit = document.getElementById('documentTokenLimit');
     documentDOM.documentTokenBar = document.getElementById('documentTokenBar');
     documentDOM.uploadButton = document.getElementById('uploadButton');
+    documentDOM.documentDashboardButton = document.getElementById('documentDashboardButton');
+    
+    // Initialize document dashboard and viewer
+    documentDashboard.initialize();
+    documentViewer.initialize();
     
     // Set up event listeners
     setupDocumentEventListeners();
@@ -36,6 +43,11 @@ function setupDocumentEventListeners() {
     // Upload button (if using custom button instead of file input)
     documentDOM.uploadButton?.addEventListener('click', () => {
         documentDOM.documentUpload?.click();
+    });
+    
+    // Document dashboard button
+    documentDOM.documentDashboardButton?.addEventListener('click', () => {
+        documentDashboard.show();
     });
 }
 
@@ -142,6 +154,11 @@ export function updateDocumentUI() {
     updateDocumentList();
     updateTokenUsage();
     updateUploadButton();
+    
+    // Update dashboard if it's visible
+    if (documentDashboard.isVisible) {
+        documentDashboard.updateDashboard();
+    }
 }
 
 /**
@@ -167,9 +184,14 @@ function updateDocumentList() {
             <div class="document-header">
                 <span class="exhibit-label">Exhibit ${doc.exhibitLetter}</span>
                 <span class="document-type">${doc.metadata.documentType}</span>
-                <button class="document-remove-btn" onclick="removeDocument('${doc.id}')">×</button>
+                <div class="document-actions">
+                    <button class="document-view-btn" onclick="viewDocument('${doc.id}')" title="View Full Document">
+                        👁️ View
+                    </button>
+                    <button class="document-remove-btn" onclick="removeDocument('${doc.id}')" title="Remove Document">×</button>
+                </div>
             </div>
-            <div class="document-details">
+            <div class="document-details" onclick="viewDocument('${doc.id}')" style="cursor: pointer;" title="Click to view full document">
                 <div class="document-name">${doc.fileName}</div>
                 <div class="document-meta">
                     <span class="token-count">${doc.tokenCount.toLocaleString()} tokens</span>
@@ -240,6 +262,21 @@ function updateUploadButton() {
 window.removeDocument = function(documentId) {
     documentService.removeDocument(documentId);
     updateDocumentUI();
+};
+
+/**
+ * View a document in the full document viewer.
+ * @param {string} documentId - ID of document to view
+ */
+window.viewDocument = function(documentId) {
+    const documents = documentService.getAllDocuments();
+    const document = documents.find(doc => doc.id === documentId);
+    
+    if (document) {
+        documentViewer.show(document);
+    } else {
+        console.error('Document not found:', documentId);
+    }
 };
 
 /**

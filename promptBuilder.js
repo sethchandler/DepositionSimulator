@@ -67,7 +67,7 @@ Examples of good instructions:
  * @param {string} customPrompts.rulesCustom - Custom legal rules instructions
  * @returns {Object} System message object with role and content
  */
-export function buildDepositionPrompt(witness, isJudgePresent, customPrompts = {}) {
+export async function buildDepositionPrompt(witness, isJudgePresent, customPrompts = {}) {
     if (!witness) return { role: "system", content: "Error: No witness data." };
     
     const witnessText = JSON.stringify(witness, null, 2);
@@ -125,18 +125,61 @@ Format judicial dialogue naturally. Example:
     // Use custom rules instructions if provided, otherwise use defaults
     const rulesInstruction = customPrompts.rulesCustom || `This deposition follows Federal Rules of Civil Procedure. Discovery is broad - questions need only be reasonably calculated to lead to admissible evidence. Hearsay and other evidence rules don't apply during discovery.`;
     
-    // Determine witness truthfulness for this session
+    // Enhanced witness truthfulness system with dynamic perjury evaluation
     const perjuryRisk = witness.witnessMotivations?.perjuryRisk || 0;
-    const willCommitPerjury = Math.random() < perjuryRisk;
+    
+    // Initialize perjury service for this witness if not already done
+    try {
+        if (typeof window !== 'undefined' && window.perjuryServiceInitialized !== witness.witnessProfile?.witnessId) {
+            const { perjuryService } = await import('./services/perjuryService.js');
+            perjuryService.initializeSession(witness);
+            window.perjuryServiceInitialized = witness.witnessProfile?.witnessId;
+        }
+    } catch (error) {
+        console.warn('Failed to initialize perjury service:', error);
+        // Continue without perjury service - deposition will work with basic truthfulness
+    }
+    
+    // Determine base truthfulness tendency for this session (more sophisticated than simple random)
+    const basePersonality = perjuryRisk > 0.7 ? 'deceptive' : 
+                          perjuryRisk > 0.4 ? 'conflicted' : 'honest';
     
     let truthfulnessInstruction;
-    if (willCommitPerjury) {
-        truthfulnessInstruction = `**Witness Truthfulness (This Session):** You have decided to lie to protect your secret. You will commit perjury, deny facts, and invent alternative explanations. For routine, non-threatening questions, answer normally. Your dishonesty should only activate when questioning approaches the information you need to conceal.`;
-    } else {
-        truthfulnessInstruction = `**Witness Truthfulness (This Session):** You have decided you must not lie, but you must still protect your secret.
-- For routine, non-threatening questions, be cooperative and answer directly.
-- When questioning approaches the embarrassing or secret information you must conceal, your strategy is to become evasive, forgetful, or provide minimal, technically true answers.
-- If asked a direct, inescapable question about the secret, you must answer it truthfully, however reluctantly.`;
+    switch (basePersonality) {
+        case 'deceptive':
+            truthfulnessInstruction = `**Enhanced Witness Truthfulness:** You are willing to lie to protect your secret, but you're strategic about it.
+- For non-threatening questions, answer truthfully to maintain credibility
+- When questions approach your secret, evaluate each one carefully:
+  * If the threat is HIGH and you feel cornered: You may lie outright
+  * If the threat is MODERATE: You prefer evasion, "I don't recall," or technically true but misleading answers
+  * If documents contradict you: You may need to adjust your story or admit limited truth
+- Track your previous answers for consistency - contradictions undermine credibility
+- Your stress level affects your judgment - under pressure, you're more likely to make poor choices`;
+            break;
+            
+        case 'conflicted':
+            truthfulnessInstruction = `**Enhanced Witness Truthfulness:** You struggle between honesty and protecting your secret.
+- You prefer truthfulness but will bend or avoid it when necessary
+- Your strategy: Progressive escalation from truth → evasion → selective truth → reluctant lies
+- When questions approach your secret:
+  * First, try redirecting or giving partial answers
+  * Then become evasive ("I don't remember clearly")
+  * Only lie if directly cornered with no alternatives
+- You feel guilty about dishonesty and may show visible stress
+- Documents and evidence make you more likely to tell the truth rather than risk exposure`;
+            break;
+            
+        case 'honest':
+            truthfulnessInstruction = `**Enhanced Witness Truthfulness:** You are fundamentally honest but must still protect your secret.
+- You will NOT lie outright, but you must still conceal embarrassing information
+- Your strategies are limited to:
+  * Evasive but truthful answers ("I prefer not to discuss personal matters")
+  * Minimal responses that satisfy the literal question without volunteering
+  * "I don't recall" only when genuinely plausible
+  * Emotional responses when pressed on painful topics
+- If directly asked inescapable questions about your secret, you must answer truthfully
+- Your honesty makes you more credible, but also more vulnerable`;
+            break;
     }
     
     return {

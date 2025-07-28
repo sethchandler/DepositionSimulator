@@ -526,6 +526,29 @@
     background-color: #f44336;
 }
 
+.document-controls {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.document-dashboard-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.document-dashboard-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 .document-list {
     margin-top: 16px;
 }
@@ -554,6 +577,31 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
+}
+
+.document-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.document-view-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.document-view-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
 }
 
 .exhibit-label {
