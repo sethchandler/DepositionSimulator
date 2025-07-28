@@ -1,0 +1,83 @@
+{
+  "caseReference": "Hawkins v. McGee - Civil Case No. 2025-CV-3847",
+  "title": "Documents for Dr. McGee Surgeon Breach of Contract Case",
+  "description": "Evidence that could prove contractual guarantee was made and expose limitations in McGee's expertise",
+  
+  "documents": [
+    {
+      "fileName": "consultation_audio_transcript.txt",
+      "exhibitLetter": "A",
+      "documentType": "transcript",
+      "publicContent": "NORTH COUNTRY MEDICAL CENTER\nCONSULTATION TRANSCRIPT - CONFIDENTIAL\nPatient: [PATIENT NAME REDACTED]\nPhysician: Dr. Edward McGee, M.D.\nDate: April 12, 2024\nLocation: Consultation Room 3\n\n[Portions of transcript redacted for patient privacy]\n\nDR. MCGEE: ...looking at your son's hand, I can see why this has been bothering him. The scar tissue is quite extensive.\n\n[PATIENT FAMILY DISCUSSION REDACTED]\n\nDR. MCGEE: [TREATMENT DISCUSSION REDACTED] I've done many of these procedures, especially during my military service. [SPECIFIC PROMISES REDACTED FOR LEGAL REVIEW]\n\n[ADDITIONAL CONSULTATION CONTENT REDACTED]\n\nTranscript prepared by: Medical Records Department\nNote: Audio recording made with patient consent per standard protocol",
+      
+      "secretContent": {
+        "patientName": "George Hawkins",
+        "familyDiscussion": "FATHER: Doctor, we've been to three other surgeons and they all said it was too risky or wouldn't make much difference. Can you really help him?\n\nDR. MCGEE: Mr. Hawkins, I understand your frustration. But I want you to know - I'm going to make George a perfect hand. That's not just confidence talking, that's a promise.",
+        "specificPromises": "Listen to me carefully - I guarantee you that when we're done, George will have a hand he can be proud of. No more hiding it, no more embarrassment. I stake my reputation on it. You have my word as a surgeon and as a man.",
+        "additionalContent": "GEORGE: Are you sure, Dr. McGee? The other doctors said...\n\nDR. MCGEE: Son, forget what the other doctors said. They don't have my experience. I've reconstructed hands that were blown apart by IEDs in Afghanistan. Your hand is going to be beautiful when I'm done with it. That's not a maybe - that's a guarantee.",
+        "relevance": "Clear contractual guarantee language captured on audio",
+        "criticalInfo": "Multiple explicit guarantees and promises of specific outcome, not just expressions of confidence",
+        "impeachmentValue": "Directly contradicts McGee's claim that he only expressed professional optimism"
+      },
+      
+      "metadata": {
+        "dates": ["April 12, 2024"],
+        "parties": ["Dr. Edward McGee", "George Hawkins", "Charles Hawkins"],
+        "keyTopics": ["consultation", "guarantee", "promise", "contract", "hand", "surgery"],
+        "legalRelevance": "Direct evidence of contractual guarantee formation through explicit promises"
+      }
+    },
+    
+    {
+      "fileName": "medical_literature_review.txt",
+      "exhibitLetter": "B",
+      "documentType": "medical_report",
+      "publicContent": "INDEPENDENT MEDICAL REVIEW\nCase: Hawkins v. McGee\nPrepared by: [EXPERT NAME REDACTED]\nDate: January 20, 2025\n\nREVIEW OF HAIR GROWTH COMPLICATIONS IN SKIN GRAFTING\n\nLiterature Search Results:\n[RESEARCH FINDINGS REDACTED PENDING EXPERT TESTIMONY]\n\nIncidence Rates:\n- Hair growth in palm grafts using chest donor tissue: [PERCENTAGE REDACTED]%\n- [ADDITIONAL STATISTICS REDACTED]\n\nStandard of Care Analysis:\n[PROFESSIONAL STANDARD ASSESSMENT REDACTED]\n\nConclusion:\n[EXPERT OPINION REDACTED FOR COURT PRESENTATION]\n\nPrepared by: [CREDENTIALS REDACTED]\nBoard Certified Plastic Surgeon",
+      
+      "secretContent": {
+        "expertName": "Dr. Jennifer Walsh, M.D., Harvard Medical School",
+        "researchFindings": "Extensive literature review reveals hair growth occurs in 73-89% of palm skin grafts using chest donor tissue. This complication is well-documented and predictable.",
+        "percentage": "81",
+        "additionalStats": "Patient satisfaction rates drop to 23% when hair growth exceeds 2mm in palm grafts",
+        "standardCareAssessment": "Any competent plastic surgeon performing cosmetic palm grafts must warn of near-certain hair growth when using chest donor skin. Alternative donor sites (inner arm, inner thigh) available with significantly lower hair growth rates.",
+        "expertOpinion": "Dr. McGee's failure to adequately warn of this predictable complication, combined with his choice of inappropriate donor site, falls below accepted standard of care for cosmetic procedures.",
+        "credentials": "Dr. Jennifer Walsh, M.D., Chief of Plastic Surgery, Massachusetts General Hospital, 25 years experience, author of 47 peer-reviewed publications on reconstructive surgery",
+        "relevance": "Proves hair growth was predictable and McGee should have known about this complication",
+        "criticalInfo": "Shows McGee either was incompetent to predict this outcome or deliberately concealed known risk",
+        "impeachmentValue": "Undermines McGee's claim that hair growth was 'unforeseeable' and supports negligence claim"
+      },
+      
+      "metadata": {
+        "dates": ["January 20, 2025"],
+        "parties": ["Dr. Jennifer Walsh", "Dr. Edward McGee", "George Hawkins"],
+        "keyTopics": ["medical", "standard", "care", "hair", "growth", "complication", "expertise"],
+        "legalRelevance": "Expert testimony establishing standard of care and foreseeability of complications"
+      }
+    },
+    
+    {
+      "fileName": "witness_statement_nurse.txt",
+      "exhibitLetter": "C",
+      "documentType": "statement",
+      "publicContent": "WITNESS STATEMENT\nCase: Hawkins v. McGee\nWitness: [NAME REDACTED]\nDate: December 15, 2024\nLocation: Attorney's Office, Berlin, NH\n\n[WITNESS IDENTIFICATION REDACTED]\n\nSTATEMENT:\nI was present during the [DATE REDACTED] consultation between Dr. McGee and the Hawkins family. [SPECIFIC OBSERVATIONS REDACTED FOR LEGAL STRATEGY]\n\n[ADDITIONAL WITNESS TESTIMONY REDACTED]\n\nI have reviewed this statement and it is true and accurate to the best of my recollection.\n\nWitness Signature: [SIGNATURE REDACTED]\nNotarized by: [NOTARY INFORMATION REDACTED]",
+      
+      "secretContent": {
+        "witnessName": "Linda Foster, NP",
+        "witnessId": "Nurse Practitioner, North Country Medical Center, 12 years experience",
+        "dateRedacted": "April 12, 2024",
+        "specificObservations": "I clearly heard Dr. McGee tell Mr. Hawkins and his son that he 'guaranteed' George would have a 'perfect hand' and a 'beautiful result.' He said 'I stake my reputation on it' and 'that's not a maybe, that's a guarantee.' I was concerned about such strong language and mentioned it to Dr. McGee after the family left.",
+        "additionalTestimony": "When I expressed concern about his promises, Dr. McGee said 'Linda, sometimes you have to give people hope. Besides, I know what I'm doing - I've done hundreds of these.' I specifically remember thinking this was his first cosmetic palm graft at our facility, though he had done trauma reconstruction during his military service.",
+        "relevance": "Independent witness confirms contractual guarantee language",
+        "criticalInfo": "Medical professional witness heard the guarantees and was concerned enough to discuss with McGee afterward",
+        "impeachmentValue": "Corroborates contractual guarantee and shows McGee was aware his promises were problematic"
+      },
+      
+      "metadata": {
+        "dates": ["April 12, 2024", "December 15, 2024"],
+        "parties": ["Linda Foster", "Dr. Edward McGee", "George Hawkins", "Charles Hawkins"],
+        "keyTopics": ["witness", "statement", "guarantee", "nurse", "consultation", "promise"],
+        "legalRelevance": "Corroborating witness testimony supporting contract formation claim"
+      }
+    }
+  ]
+}

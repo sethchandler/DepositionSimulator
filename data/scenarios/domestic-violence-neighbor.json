@@ -1,0 +1,30 @@
+{
+  "id": "domestic-violence-neighbor",
+  "title": "Domestic Violence Case - The Observant Neighbor",
+  "caseReference": "Civil-DV-2024-047",
+  "description": "Domestic violence case where neighbor Margaret Chen documented multiple incidents but fears retaliation from violent perpetrator",
+  
+  "witness": {
+    "file": "neighbor-margaret-chen.json",
+    "name": "Margaret 'Maggie' Ruth Chen",
+    "role": "Neighbor who witnessed domestic violence incidents"
+  },
+  
+  "documents": {
+    "file": "homicide-eyewitness-docs.json",
+    "description": "We'll reuse the existing documents for now - this needs proper DV-specific documents"
+  },
+  
+  "educationalObjectives": [
+    "Practice handling reluctant witnesses afraid of retaliation",
+    "Learn to work with trauma-affected testimony",
+    "Explore how community relationships affect witness credibility",
+    "Understand domestic violence documentation and evidence patterns"
+  ],
+  
+  "keyImpeachmentOpportunities": [
+    "Journal entries documenting specific incidents with dates and times",
+    "Police reports showing pattern of inadequate response",
+    "Guilt over inaction during most severe assault may affect testimony consistency"
+  ]
+}

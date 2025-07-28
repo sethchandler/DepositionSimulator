@@ -1,0 +1,30 @@
+{
+  "id": "hr-manager-discrimination",
+  "title": "Employment Case - Age Discrimination by HR Manager",
+  "caseReference": "Clark v. Ener-SzE Solutions",
+  "description": "Age discrimination case where HR Manager Susan Miller terminated 62-year-old employee while making age-based remarks and applying inconsistent performance standards",
+  
+  "witness": {
+    "file": "hr-manager-susan-miller.json",
+    "name": "Susan Miller",
+    "role": "HR Director who terminated plaintiff"
+  },
+  
+  "documents": {
+    "file": "hr-manager-docs.json",
+    "description": "Internal emails revealing age-discriminatory remarks and performance data showing disparate treatment"
+  },
+  
+  "educationalObjectives": [
+    "Practice exposing discriminatory animus through document impeachment",
+    "Learn to compare treatment of similarly situated employees",
+    "Explore how pretext can mask discriminatory motives",
+    "Understand employment law burden-shifting framework"
+  ],
+  
+  "keyImpeachmentOpportunities": [
+    "Email stating 'the real problem is that David Clark has just gotten old'",
+    "Performance comparison showing younger employee had worse metrics but wasn't terminated",
+    "Meeting notes revealing coded discriminatory language during termination process"
+  ]
+}

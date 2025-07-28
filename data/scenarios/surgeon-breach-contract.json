@@ -1,0 +1,30 @@
+{
+  "id": "surgeon-breach-contract",
+  "title": "Breach of Contract Case - Surgeon's Failed Guarantee",
+  "caseReference": "Hawkins v. McGee - Civil Case No. 2025-CV-3847",
+  "description": "Breach of contract case where confident military surgeon Dr. McGee guaranteed perfect cosmetic result but delivered hairy palm requiring further surgery",
+  
+  "witness": {
+    "file": "surgeon-edward-mcgee.json",
+    "name": "Dr. Edward Robert Bradley McGee, M.D.",
+    "role": "Defendant surgeon who performed failed hand surgery"
+  },
+  
+  "documents": {
+    "file": "surgeon-contract-docs.json",
+    "description": "Audio transcript of consultation, medical literature, and nurse witness statement proving contractual guarantee was made"
+  },
+  
+  "educationalObjectives": [
+    "Practice contract formation theory in professional services context",
+    "Learn to use expert testimony and medical literature as impeachment tools",
+    "Explore how professional overconfidence can create legal liability",
+    "Understand medical malpractice vs. breach of contract distinctions"
+  ],
+  
+  "keyImpeachmentOpportunities": [
+    "Audio transcript capturing explicit guarantees: 'I guarantee you a perfect hand'",
+    "Medical literature showing hair growth was predictable in 81% of similar procedures",
+    "Nurse witness statement confirming guarantees and McGee's awareness they were problematic"
+  ]
+}

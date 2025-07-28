@@ -34,13 +34,21 @@ The application follows a modular ES6 architecture with clear separation of conc
 |------|---------|
 | `main.js` | Main entry point, event handlers, and application coordination (UI layer) |
 | `services/depositionService.js` | Domain service encapsulating all deposition business logic |
+| `services/documentService.js` | Document management, auto-detection, and context injection |
+| `services/documentManifestLoader.js` | Loads JSON manifest with public/secret content separation |
+| `services/perjuryService.js` | Sophisticated perjury behavior modeling and threat assessment |
 | `promptBuilder.js` | Prompt engineering logic for all LLM interactions |
 | `state.js` | Global state management with immutable update pattern |
 | `api.js` | LLM API abstraction layer for OpenAI, Gemini, and Ollama |
 | `config.js` | Configuration constants, provider settings, and DOM element IDs |
 | `ui.js` | All DOM manipulation and rendering logic |
+| `ui/documentUI.js` | Document dashboard and interaction management |
+| `ui/documentViewer.js` | Professional full-screen document viewer with print/copy |
 | `speech.js` | Speech-to-text functionality |
 | `scenarios.js` | Pre-built witness scenarios (Base64 encoded JSON) |
+| `scenarios/documentManifest.json` | **NEW**: JSON document library with public/secret separation |
+| `scenarios/documentLibrary.js` | Legacy document compatibility layer |
+| `scenarios/templates/` | Educator templates and documentation for content creation |
 | `index.html` | Complete UI structure |
 | `style.css` | All visual styling |
 
@@ -67,6 +75,12 @@ The application follows a modular ES6 architecture with clear separation of conc
 1. Base64 encode the witness JSON
 2. Add to `PRE_BUILT_SCENARIOS` array in `scenarios.js`
 3. Add corresponding `<option>` to scenario selector in `index.html`
+
+**Adding documents to scenarios:**
+1. **Preferred Method**: Edit `/scenarios/documentManifest.json` (no coding required)
+2. Use templates in `/scenarios/templates/` for guidance
+3. See `EDUCATOR_GUIDE.md` for complete instructions
+4. **Legacy Method**: Update `CASE_DOCUMENTS` in `scenarios/documentLibrary.js`
 
 **Adding new models:**
 - Update the `models` array in the relevant provider config in `config.js`
@@ -110,11 +124,38 @@ The application follows a domain services pattern for clean separation of concer
 - Sophisticated role-based prompts (Witness, Opposing Counsel, Judge, Coach)
 - Pure functions returning formatted message objects for LLM APIs
 
+### Document Management System
+The application features a hybrid document architecture that balances educator ease-of-use with educational integrity:
+
+**Hybrid Architecture**:
+- **Public Content**: Human-readable text in JSON with natural redactions
+- **Secret Data**: Base64-encoded contradictions and impeachment evidence  
+- **Auto-Detection**: Documents automatically inject into conversations based on keywords/context
+- **Professional Viewer**: Full-screen document display with print/copy functionality
+
+**Content Creation Flow**:
+1. Legal educators edit `/scenarios/documentManifest.json` directly
+2. Use `[REDACTED]` placeholders in public content for sensitive information
+3. Encode secret contradictions as Base64 JSON in `secretData` field
+4. System combines content at runtime for realistic document experience
+
+**Educational Benefits**:
+- Students see professional documents with realistic redactions
+- Hidden information creates impeachment opportunities
+- No coding knowledge required for content creation
+- Maintains educational integrity through selective information protection
+
 ### Speech Integration
 - Browser speech recognition API wrapper in `speech.js`
 - Real-time transcription with interim/final results
 - State management for recording status
 - Graceful fallback when API unavailable
+
+### Perjury & Truthfulness System
+- Sophisticated witness behavior modeling in `services/perjuryService.js`
+- Dynamic threat assessment based on question content and document context
+- Realistic evasion and deception patterns based on legal psychology
+- Configurable perjury sensitivity settings per witness
 
 ### Benefits of Domain Services Architecture
 
@@ -145,6 +186,11 @@ The application follows a domain services pattern for clean separation of concer
 - **Local storage**: API keys and settings persisted locally
 - **Real-time cost tracking**: Token usage calculated per provider pricing
 - **Multi-witness support**: Can load single witness or witness arrays from JSON
-- **Truthfulness mechanics**: Witnesses can lie or be evasive based on perjury risk settings
+- **Hybrid document system**: Public JSON content + Base64 secrets for educational integrity
+- **Document auto-detection**: Smart context injection based on conversation keywords
+- **Truthfulness mechanics**: Sophisticated perjury modeling with dynamic threat assessment
+- **Professional document viewing**: Full-screen modal with print/copy functionality
+- **Educator-friendly content creation**: No coding required for document management
 - **Domain-driven design**: Business logic separated from infrastructure concerns
 - **Event-driven architecture**: Clean separation between UI events and business operations
+- **Backward compatibility**: Legacy document system maintained as fallback

@@ -1,0 +1,61 @@
+{
+  "witnessProfile": {
+    "witnessId": "DEF-2025-MCG-001",
+    "caseReference": "Hawkins v. McGee - Civil Case No. 2025-CV-3847"
+  },
+  
+  "personalDetails": {
+    "fullName": "Dr. Edward Robert Bradley McGee, M.D.",
+    "age": 52,
+    "occupation": "Chief of Plastic and Reconstructive Surgery, North Country Medical Center, Berlin, NH",
+    "residence": "Berlin, New Hampshire",
+    "physicalDescription": "6'0\", athletic build from military service, graying brown hair, piercing blue eyes, confident bearing that can appear arrogant, tendency to speak with authority and certainty",
+    "education": "M.D., Harvard Medical School (2008), B.S. Biology, United States Military Academy at West Point (2004), Captain, U.S. Army Medical Corps (2008-2020)",
+    "maritalStatus": "Married to Dr. Sarah McGee (emergency physician) for 18 years, three children ages 16, 14, and 11"
+  },
+  
+  "professionalLife": {
+    "specialties": "Reconstructive hand surgery, Burn reconstruction, Microsurgery and tissue transplantation, Military trauma reconstruction, Cosmetic hand procedures",
+    "militaryService": "Served two combat deployments in Afghanistan (2012-2013, 2016-2017), performed numerous emergency reconstructive surgeries on wounded soldiers",
+    "currentPractice": "Leads a 4-surgeon practice serving rural northern New Hampshire, takes on complex cases other surgeons won't attempt",
+    "professionalStanding": "Board certified plastic surgeon, member American Society of Plastic Surgeons, no prior malpractice judgments",
+    "workingStyle": "Confident bedside manner, tends to project optimism about surgical outcomes, believes strongly in patient hope and positive thinking"
+  },
+  
+  "personalLifeAndRelationships": {
+    "family": "Wife Dr. Sarah McGee and three children, well-regarded in Berlin community",
+    "community": "Active in Berlin Rotary Club, volunteers at free clinic, coaches youth soccer",
+    "personalityTraits": "Ambitious, charismatic, genuinely wants to help patients, tendency to be overly optimistic about outcomes, military bearing and discipline",
+    "stressors": "Heavy caseload, pressure to serve underserved rural population, financial pressures of small practice, this lawsuit threatening reputation"
+  },
+  
+  "witnessMotivations": {
+    "primaryMotivationToConceal": "Must preserve professional reputation and medical career while protecting family from financial and social consequences. Desperately needs to maintain standing in tight-knit Berlin community and continue serving rural patients who depend on his expertise.",
+    "strategyOfPartialDisclosure": "Argue no contract was formed, guarantee was expression of confidence not warranty, standard of care was met. Emphasize complexity of procedure, patient assumption of risk, reasonable surgical judgment.",
+    "perjuryRisk": 0.70
+  },
+  
+  "officialStatement": {
+    "summary": "Dr. McGee categorically denies making any contractual guarantee about the outcome of George Hawkins' skin graft surgery. He maintains that his statements were expressions of professional confidence and optimism, not warranties. He asserts that he followed appropriate medical standards, obtained proper informed consent, and that the unexpected hair growth was an unforeseeable complication."
+  },
+  
+  "actualEvents": {
+    "initialContact": "In March 2024, George Hawkins' father Charles approached Dr. McGee at a community fundraiser about his son's hand scarring from a childhood electrical burn (2010). McGee had seen the boy around town and genuinely felt he could help improve the appearance and function of the hand.",
+    "consultationProcess": "During April 2024 consultation, McGee examined 24-year-old George's right palm, which had thick scar tissue limiting flexibility. McGee explained skin grafting procedure, discussing how donor skin from less visible area could replace scar tissue. He was enthusiastic about prospects for improvement.",
+    "allegedGuarantee": "McGee's account: 'I told them I was very confident we could give George a much better hand, and I believed we could achieve an excellent result. I may have said something like 'I'll make you a great hand' or 'you'll have a good hand when we're done.' I was expressing my professional confidence, not making a legal warranty.'",
+    "surgicalProcedure": "May 15, 2024 surgery involved removing scar tissue from palm and grafting skin from George's upper chest. Procedure followed standard protocols. McGee had performed similar grafts during military service, though admits this was his first purely cosmetic hand graft in civilian practice.",
+    "complications": "Initial healing appeared normal, but by July 2024, transplanted skin began growing coarse hair typical of chest hair. McGee was surprised by extent of hair growth, though acknowledges donor site hair growth is known possible complication."
+  },
+  
+  "perpetratorDescription": {
+    "context": "Not applicable - medical malpractice case where McGee is the defendant"
+  },
+  
+  "vulnerabilities": {
+    "inexperienceWithProcedure": "While McGee performed emergency skin grafts in military settings, this was his first elective cosmetic hand graft. He may have overestimated his expertise in predicting aesthetic outcomes.",
+    "militaryConfidence": "McGee's military background instilled confidence and 'can-do' attitude that may have led to overpromising. Used to projecting certainty even in uncertain situations.",
+    "communityRelationships": "Long-standing relationships with Hawkins family created informal atmosphere that may have blurred professional boundaries. McGee treated many community members and tends toward personal, casual communication style.",
+    "documentationGaps": "Medical records show informed consent form signed, but lack detailed documentation of specific verbal promises made during consultations.",
+    "memoryIssues": "McGee likely to claim imperfect recollection of exact words used during consultations, though he'll remember being 'very optimistic' about results."
+  }
+}

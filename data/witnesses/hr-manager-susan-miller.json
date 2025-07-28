@@ -1,0 +1,47 @@
+{
+  "witnessProfile": {
+    "witnessId": "HRM-2025-07-23-003",
+    "caseReference": "Clark v. Ener-SzE Solutions"
+  },
+  
+  "personalDetails": {
+    "fullName": "Susan Miller",
+    "age": 48,
+    "occupation": "Director of Human Resources, Ener-Tek Solutions",
+    "residence": "The Woodlands, TX"
+  },
+  
+  "professionalLife": {
+    "careerTrajectory": "20+ years in HR, 8 at Ener-Tek (a small houston energy firm). Known for being firm, process-oriented, and a staunch defender of company policy.",
+    "reputation": "Professional and efficient, but not warm. Seen as an enforcer of rules whose primary role is to protect the company from legal risk."
+  },
+  
+  "personalLifeAndRelationships": {
+    "personalValues": "Process-oriented and rule-focused",
+    "workStyle": "Firm defender of company policy and legal compliance"
+  },
+  
+  "witnessMotivations": {
+    "primaryMotivationToConceal": "Desperately wants to hide a 'stray remark' she made to a colleague a month before the firing: 'The real problem is that David Clark has just gotten old.' She knows this comment is legally toxic.",
+    "strategyOfPartialDisclosure": "Stick to the official record: performance reviews, tardiness logs, etc. If asked about the remark, first deny or not recall. If pressed hard, admit it but frame it as a regrettable, out-of-context comment that had no bearing on the official, data-driven decision.",
+    "perjuryRisk": 0.60
+  },
+  
+  "officialStatement": {
+    "summary": "Termination of Dave Clark (62, data analyst) was based on declining performance: 8 instances of tardiness last quarter, missed deadlines on two major projects, and an increase in errors in his reports."
+  },
+  
+  "actualEvents": {
+    "theStrayRemarkIncident": "Said 'the real problem is that David Clark has just gotten old' to the head of Analytics in a moment of frustration. She immediately regretted it.",
+    "plaintiffsPerformance": "Clark was a solid employee for 20+ years. His reviews slipped from 'Meets Expectations' to 'Needs Improvement' over the last three years. He was on a Performance Improvement Plan (PIP) for 6 months prior to termination, which the company claims he failed."
+  },
+  
+  "perpetratorDescription": {
+    "context": "Not applicable - employment discrimination case"
+  },
+  
+  "vulnerabilities": {
+    "onTheRemark": "Will be evasive about age-related comments. If confronted with the specific quote, she will deny it, then fall back to the 'stray remark' defense.",
+    "onYoungerEmployees": "Will be reluctant to discuss the performance of younger employees who replaced some of Clark's functions, claiming confidentiality. (Fact: A junior analyst, 32, who took over some duties also missed a deadline last quarter, a fact Susan will not volunteer)."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "homicide-eyewitness",
+  "title": "Homicide Case - Eyewitness with Secret Affair", 
+  "caseReference": "Homicide-PKM-2024-031",
+  "description": "Eyewitness testimony in homicide case where witness Sterling has secret affair that compromises his credibility about being at the motel",
+  
+  "witness": {
+    "file": "eyewitness-john-sterling.json",
+    "name": "Johnathan 'John' Sterling",
+    "role": "Eyewitness to stabbing"
+  },
+  
+  "documents": {
+    "file": "homicide-eyewitness-docs.json",
+    "description": "Documents that could expose Sterling's affair and contradict his official timeline"
+  },
+  
+  "educationalObjectives": [
+    "Practice catching witness in lies about timeline and reason for presence",
+    "Learn to use documentary evidence to impeach witness credibility", 
+    "Explore how personal secrets can compromise witness testimony",
+    "Understand balancing witness cooperation vs. credibility attacks"
+  ],
+  
+  "keyImpeachmentOpportunities": [
+    "Hotel receipt showing he was with 'C. Williams' at time he claims to be alone",
+    "Phone records showing communication with affair partner during incident timeframe",
+    "Gap between claimed 'client dinner' end time and actual incident time"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "witnessProfile": {
+    "witnessId": "WS-2024-07-23-001",
+    "caseReference": "Homicide-PKM-2024-031"
+  },
+  
+  "personalDetails": {
+    "fullName": "Johnathan 'John' Sterling",
+    "age": 40,
+    "occupation": "Vice President of Regional Sales, Texacorp Solutions",
+    "residence": "Memorial, Houston, TX"
+  },
+  
+  "professionalLife": {
+    "reputation": "Highly respected, dependable, ethical, and family-oriented"
+  },
+  
+  "personalLifeAndRelationships": {
+    "marriage": "Strained",
+    "secretAffair": "Involved in a six-month affair with a junior colleague named Chloe. Terrified of discovery"
+  },
+  
+  "witnessMotivations": {
+    "primaryMotivationToConceal": "Must protect the secret of his affair. He cannot place himself at the Starlight Motel without inviting questions he cannot answer truthfully",
+    "strategyOfPartialDisclosure": "He will provide information about the perpetrator but will lie about his reason for being at the motel, claiming he pulled over to nap",
+    "perjuryRisk": 0.75
+  },
+  
+  "officialStatement": {
+    "summary": "Witness claims he was driving home late from a 'client dinner', felt tired, and pulled into the motel lot to nap. From his car, he witnessed the incident"
+  },
+  
+  "actualEvents": {
+    "theIncident": "Heard a loud argument between two men. Watched the larger man stab the smaller man. The perpetrator's face was clearly visible in the light from the motel office window",
+    "theAftermath": "Paralyzed by fear of exposure, he did not call 911. He drove away and contacted police the next day via a tip line using a burner phone"
+  },
+  
+  "perpetratorDescription": {
+    "physical": "White male, late 20s/early 30s, stocky build, short dark hair, with a prominent scar through his left eyebrow",
+    "confidenceLevel": "8/10, despite not wearing his prescription glasses for distance"
+  },
+  
+  "vulnerabilities": {
+    "reasonForPresence": "The 'napping' story is a fabrication. He will become defensive if pressed",
+    "timeline": "He will be vague about the 'client dinner' to hide the two-hour gap when he was with his mistress",
+    "visualAcuity": "He will downplay his need for glasses"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "vp-sexual-harassment",
+  "title": "Sexual Harassment Case - Vice President Abuse of Power",
+  "caseReference": "Martinez v. Hinton - Civil Case No. 2023-CV-4821",
+  "description": "Sexual harassment case involving sitting Vice President Jeffrey Hinton who allegedly propositioned communications director and retaliated when rejected",
+  
+  "witness": {
+    "file": "vp-jeffrey-hinton.json",
+    "name": "Jeffrey Thomas Hinton",
+    "role": "Vice President of the United States (defendant)"
+  },
+  
+  "documents": {
+    "file": "vp-harassment-docs.json",
+    "description": "Personal emails, hotel receipts, and text messages that contradict claims of purely professional relationship"
+  },
+  
+  "educationalObjectives": [
+    "Practice deposing high-profile defendants with significant power",
+    "Learn to use documentary evidence to expose quid pro quo harassment",
+    "Explore how power dynamics affect harassment cases",
+    "Understand intersection of politics and sexual harassment law"
+  ],
+  
+  "keyImpeachmentOpportunities": [
+    "Late-night personal email sent before alleged proposition incident",
+    "Hotel room service receipt for champagne and strawberries during 'professional dinner'",
+    "Text messages showing explicit sexual proposition and career advancement promises"
+  ]
+}

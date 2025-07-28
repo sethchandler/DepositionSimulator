@@ -2,6 +2,7 @@
 
 import { PROVIDERS_CONFIG } from './config.js';
 import { PRE_BUILT_SCENARIOS } from './scenarios.js';
+import { dataLoader } from './services/dataLoader.js';
 import { getState, setState, getActiveWitness } from './state.js';
 import { callLlmApi, testOllamaConnection } from './api.js';
 import { dom, initializeUI, initializeDOMElements, renderModelOptions, renderPresetOptions, renderChatMessages, renderCost, renderWitnessOptions, updateUI, displayError, setRecordingActive, updateRecordButtonState } from './ui.js';
@@ -12,6 +13,8 @@ import { initializeSpeech, toggleRecording, isSpeechRecognitionSupported } from 
 import { getPresetInstruction } from './prompts/presets.js';
 // Document system imports
 import { initializeDocumentUI, updateDocumentUI, getDocumentContextForQuestion, clearActiveDocumentContexts } from './ui/documentUI.js';
+import { documentService } from './services/documentService.js';
+import { documentViewer } from './ui/documentViewer.js';
 
 // --- Security Utilities ---
 /**
@@ -60,7 +63,7 @@ function deobfuscateApiKey(obfuscatedKey) {
 }
 // --- Event Handlers ---
 // In main.js, replace the entire handleProviderChange function with this:
-function handleProviderChange(e) {
+async function handleProviderChange(e) {
     const providerId = e.target.value;
     const newProviderConfig = PROVIDERS_CONFIG[providerId]; // Get the new provider's config
     
@@ -82,7 +85,7 @@ function handleProviderChange(e) {
         dom.apiKeyInput.parentElement.style.display = (providerId === 'ollama') ? 'none' : 'block';
     }
     renderModelOptions();
-    resetChat();
+    await resetChat();
 }
 
 
@@ -96,14 +99,14 @@ function handleApiKeyChange(e) {
     localStorage.setItem(`llm_${providerId}_key`, obfuscatedKey);
 }
 
-function handleModelChange(e) {
+async function handleModelChange(e) {
     setState({ model: e.target.value });
-    resetChat();
+    await resetChat();
 }
 
-function handleJudgeModeChange(e) {
+async function handleJudgeModeChange(e) {
     setState({ isJudgePresent: e.target.checked });
-    resetChat();
+    await resetChat();
 }
 
 // Advanced prompt setting handlers
@@ -191,7 +194,7 @@ async function handlePromptFileUpload(e) {
                 rulesCustom: parsedInstructions.rulesInstructions || getState().rulesCustom || ''
             });
             
-            resetChat();
+            await resetChat();
             
             // Show success message
             const roleCount = [parsedInstructions.judgeInstructions, parsedInstructions.counselInstructions, parsedInstructions.rulesInstructions].filter(Boolean).length;
@@ -231,15 +234,21 @@ function handleFileLoad(e) {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
         try {
             const caseData = JSON.parse(event.target.result);
             // Basic validation
             if (!caseData || (!caseData.witnesses && !caseData.witnessProfile)) {
                  throw new Error("Invalid case file structure. Must contain a 'witnesses' array or witness profile.");
             }
-            loadWitnessData(caseData);
+            
+            // Clear existing documents before loading new case
+            documentService.clearAllDocuments();
+            
+            await loadWitnessData(caseData);
             if (dom.scenarioSelector) dom.scenarioSelector.value = "-1";
+            
+            console.log('Loaded custom case file and cleared previous documents');
         } catch (err) {
             const errorInfo = handleError(err, 'handleFileLoad');
             displayError(`Failed to load file: ${errorInfo.userMessage}`);
@@ -248,18 +257,77 @@ function handleFileLoad(e) {
     reader.readAsText(file);
 }
 
-function handleScenarioChange(e) {
+async function handleScenarioChange(e) {
     const index = parseInt(e.target.value, 10);
     if (index >= 0) {
         try {
-            const encodedData = PRE_BUILT_SCENARIOS[index];
-            const decodedData = atob(encodedData);
-            const jsonData = JSON.parse(decodedData);
-            loadWitnessData(jsonData);
+            // Map scenario indices to JSON scenario IDs
+            const scenarioMap = {
+                0: 'homicide-eyewitness',        // John Sterling
+                1: 'domestic-violence-neighbor', // Margaret Chen  
+                2: 'hr-manager-discrimination',  // Susan Miller
+                3: 'vp-sexual-harassment',       // Jeffrey Hinton
+                4: 'surgeon-breach-contract'     // Dr. McGee
+            };
+            
+            const scenarioId = scenarioMap[index];
+            
+            if (scenarioId) {
+                // Use new JSON system for all scenarios
+                console.log(`Loading ${scenarioId} using new JSON system...`);
+                
+                // Clear existing documents before loading new scenario
+                documentService.clearAllDocuments();
+                
+                // Load complete scenario using new dataLoader  
+                console.log(`About to load scenario: ${scenarioId}`);
+                const scenarioData = await dataLoader.loadCompleteScenario(scenarioId);
+                console.log('Loaded scenario data:', scenarioData);
+                console.log('Documents loaded:', scenarioData.documents);
+                
+                // Convert witness to legacy format for compatibility
+                const legacyWitness = dataLoader.convertWitnessToLegacyFormat(scenarioData.witness);
+                await loadWitnessData(legacyWitness);
+                
+                // Convert and load documents
+                console.log('About to convert documents...', scenarioData.documents);
+                const documentsForService = dataLoader.convertDocumentsToServiceFormat(scenarioData.documents);
+                console.log('Converted documents for service:', documentsForService);
+                
+                // Load documents into documentService
+                documentsForService.forEach(doc => {
+                    // Ensure we don't exceed document limits
+                    documentService.cleanupOldDocumentsIfNeeded();
+                    
+                    // Add document to registry using the same pattern as loadPreBuiltDocuments
+                    documentService.documentRegistry.set(doc.id, doc);
+                    
+                    console.log(`Loaded document: ${doc.fileName} (Exhibit ${doc.exhibitLetter})`);
+                });
+                
+                // Update the document UI to show loaded documents
+                updateDocumentUI();
+                
+                console.log(`Successfully loaded ${scenarioId} from new JSON format`);
+            } else {
+                // Fallback to old base64 system if scenario not in map
+                const encodedData = PRE_BUILT_SCENARIOS[index];
+                const decodedData = atob(encodedData);
+                const jsonData = JSON.parse(decodedData);
+                
+                // Clear existing documents before loading new scenario
+                documentService.clearAllDocuments();
+                
+                await loadWitnessData(jsonData);
+                console.log(`Switched to legacy scenario ${index} and cleared previous documents`);
+            }
+            
             if (dom.fileLoaderInput) dom.fileLoaderInput.value = ""; // Clear file input
+            
         } catch (err) {
             const errorInfo = handleError(err, 'handleScenarioChange');
             displayError(`Failed to load scenario: ${errorInfo.userMessage}`);
+            console.error('Scenario loading error:', err);
         }
     }
 }
@@ -418,25 +486,50 @@ function clearChatInput() {
     dom.chatInput.style.height = 'auto'; // Reset height
 }
 
-function loadWitnessData(data) {
+async function loadWitnessData(data) {
     const witnesses = Array.isArray(data.witnesses) ? data.witnesses : [data];
     setState({
         caseData: data,
         witnesses: witnesses,
         activeWitnessIndex: 0
     });
+    
+    // Load pre-built documents if available (now async)
+    // Skip auto-loading for new JSON scenarios - they handle documents differently
+    const witness = witnesses[0];
+    const newJsonCases = [
+        'Homicide-PKM-2024-031',
+        'Civil-DV-2024-047', 
+        'Clark v. Ener-SzE Solutions',
+        'Martinez v. Hinton - Civil Case No. 2023-CV-4821',
+        'Hawkins v. McGee - Civil Case No. 2025-CV-3847'
+    ];
+    
+    if (witness && witness.witnessProfile?.caseReference && 
+        !newJsonCases.includes(witness.witnessProfile.caseReference)) {
+        try {
+            await documentService.loadPreBuiltDocuments(witness.witnessProfile.caseReference);
+            console.log(`Loaded case documents for: ${witness.witnessProfile.caseReference}`);
+        } catch (error) {
+            console.warn('Failed to load case documents:', error);
+        }
+    } else if (witness && newJsonCases.includes(witness.witnessProfile?.caseReference)) {
+        console.log(`Skipping old document system for new JSON case: ${witness.witnessProfile.caseReference}`);
+    }
+    
     renderWitnessOptions();
-    resetChat();
+    await resetChat();
+    updateDocumentUI(); // Update document UI to show loaded documents
 }
 
-function resetChat() {
+async function resetChat() {
     const witness = getActiveWitness();
     const { isJudgePresent } = getState();
     
     // Use service to build system prompt if witness exists
     let systemPrompt = null;
     if (witness) {
-        systemPrompt = depositionService.buildSystemPrompt(witness, [], false, isJudgePresent);
+        systemPrompt = await depositionService.buildSystemPrompt(witness, [], false, isJudgePresent);
     }
     
     setState({
@@ -530,9 +623,9 @@ function initialize() {
     });
     dom.fileLoaderInput?.addEventListener('change', handleFileLoad);
     dom.scenarioSelector?.addEventListener('change', handleScenarioChange);
-    dom.witnessSelector?.addEventListener('change', (e) => {
+    dom.witnessSelector?.addEventListener('change', async (e) => {
         setState({ activeWitnessIndex: Number(e.target.value) });
-        resetChat();
+        await resetChat();
     });
     dom.modeToggleCheckbox?.addEventListener('change', (e) => {
         setState({ isOocMode: e.target.checked });

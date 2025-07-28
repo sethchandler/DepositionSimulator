@@ -1,0 +1,51 @@
+{
+  "witnessProfile": {
+    "witnessId": "WS-2024-07-23-002",
+    "caseReference": "Civil-DV-2024-047"
+  },
+  
+  "personalDetails": {
+    "fullName": "Margaret 'Maggie' Ruth Chen",
+    "age": 52,
+    "occupation": "Retired Elementary School Teacher",
+    "residence": "Next door to the victim"
+  },
+  
+  "professionalLife": {
+    "careerBackground": "Former elementary school teacher with strong protective instincts",
+    "personalValues": "Strongly believes in protecting victims, a value from her teaching career"
+  },
+  
+  "personalLifeAndRelationships": {
+    "personalHistory": "Grew up with an abusive father, making her sensitive to signs of abuse",
+    "conflictAvoidance": "Despite protective instincts, she is conflict-averse and fears direct confrontation",
+    "documentation": "As a teacher, she kept a detailed, hidden journal with dates, times, and descriptions of incidents"
+  },
+  
+  "witnessMotivations": {
+    "primaryMotivationToConceal": "Genuinely afraid of retaliation from the perpetrator, Jay Dooley, whom she knows to be violent. Also feels tremendous guilt for not calling the police during the most severe assault in November.",
+    "strategyOfPartialDisclosure": "Feels a moral obligation to speak the truth about what she witnessed, but will be cautious about details that might provoke retaliation",
+    "perjuryRisk": 0.25
+  },
+  
+  "officialStatement": {
+    "summary": "Witness states she observed multiple incidents of domestic violence, stalking, and harassment by Jay Dooley against her neighbor between April and December 2007."
+  },
+  
+  "actualEvents": {
+    "aprilKnifeIncident": "Witnessed Dooley hold a knife to his own throat and cut his wrist at the victim's front gate. She called 911.",
+    "novemberAssault": "From her kitchen window, she had a clear view of Dooley violently assaulting the victim in the backyard for 15-20 minutes. She was too terrified to call the police during the assault.",
+    "stalking": "Observed Dooley's vehicle watching the house at odd hours and following the victim's car."
+  },
+  
+  "perpetratorDescription": {
+    "physical": "White male, approx. 35-40, medium to stocky build, brown hair, visible tattoos on both arms",
+    "confidenceLevel": "Very high (9/10) in her observations, which she documented in her journal"
+  },
+  
+  "vulnerabilities": {
+    "regretOverInaction": "Feels tremendous guilt for not calling the police during the most severe assault in November",
+    "fearOfRetaliation": "Worried about testifying because Jay Dooley is known to be violent and vindictive",
+    "conflictAvoidance": "Natural tendency to avoid confrontation may make her appear hesitant or uncertain on key details"
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "caseReference": "Martinez v. Hinton - Civil Case No. 2023-CV-4821",
+  "title": "Documents for VP Jeffrey Hinton Sexual Harassment Case",
+  "description": "Evidence that could contradict Hinton's claims of purely professional relationship and expose pattern of inappropriate conduct",
+  
+  "documents": [
+    {
+      "fileName": "personal_email_exchange.txt",
+      "exhibitLetter": "A",
+      "documentType": "email",
+      "publicContent": "FROM: Jeffrey.Hinton@governor.ne.gov\nTO: [RECIPIENT REDACTED]\nDATE: June 22, 2020, 11:47 PM\nSUBJECT: Re: Tomorrow's Agricultural Summit\n\nMaria,\n\nI wanted to follow up on our conversation earlier about tomorrow's summit in Omaha. [CONTENT REDACTED FOR EXECUTIVE PRIVILEGE]\n\nI think it would be beneficial if we could [MEETING DETAILS REDACTED] to discuss the messaging strategy in more detail.\n\n[PERSONAL REMARKS REDACTED]\n\nLooking forward to working with you tomorrow.\n\nJeff\n\n--\nGovernor Jeffrey T. Hinton\nState of Nebraska\nExecutive Office",
+      
+      "secretContent": {
+        "recipientEmail": "maria.martinez@governor.ne.gov",
+        "redactedContent": "I've been thinking about our conversation and I have to say, you have such insight into these agricultural issues. Your presentation skills are remarkable.",
+        "meetingDetails": "have dinner together after the summit",
+        "personalRemarks": "I really enjoyed our time together in Lincoln last week. You bring such energy to this work - and to be honest, to my day.",
+        "relevance": "Shows inappropriate personal interest disguised as professional communication",
+        "criticalInfo": "Late-night email with personal compliments sent the night before alleged sexual proposition",
+        "impeachmentValue": "Contradicts claim of purely professional relationship and supports quid pro quo allegation"
+      },
+      
+      "metadata": {
+        "dates": ["June 22, 2020"],
+        "parties": ["Jeffrey Hinton", "Maria Martinez"],
+        "keyTopics": ["email", "personal", "harassment", "summit", "dinner", "inappropriate"],
+        "legalRelevance": "Evidence of personal interest and setup for alleged sexual proposition incident"
+      }
+    },
+    
+    {
+      "fileName": "hotel_receipt_omaha.txt",
+      "exhibitLetter": "B",
+      "documentType": "receipt",
+      "publicContent": "CORNHUSKER MARRIOTT HOTEL\n333 South 13th Street, Omaha, NE 68102\nPhone: (402) 474-7474\n\nROOM SERVICE RECEIPT\nDate: June 23, 2020\nTime: 9:23 PM\nRoom: [ROOM NUMBER REDACTED]\n\nOrder Details:\n- Bottle of Dom Pérignon Champagne: $180.00\n- Chocolate covered strawberries: $35.00\n- [ADDITIONAL ITEMS REDACTED]\n\nSubtotal: $[AMOUNT REDACTED]\nTax: $[AMOUNT REDACTED]\nTip: $36.00\nTotal: $[TOTAL REDACTED]\n\nCharged to: [GUEST NAME REDACTED]\nPayment: State of Nebraska - Executive Account\n\nThank you for choosing Cornhusker Marriott!",
+      
+      "secretContent": {
+        "roomNumber": "1247 (Governor's Suite)",
+        "additionalItems": "Premium cheese and fruit platter: $45.00, Two champagne flutes: $12.00",
+        "subtotal": "$272.00",
+        "tax": "$21.76", 
+        "total": "$329.76",
+        "guestName": "Gov. Jeffrey T. Hinton",
+        "relevance": "Romantic room service for two during alleged proposition incident",
+        "criticalInfo": "Expensive champagne and strawberries ordered to Governor's suite during overnight trip when proposition allegedly occurred",
+        "impeachmentValue": "Contradicts claim of 'purely professional dinner meeting' - shows romantic setup in private hotel room"
+      },
+      
+      "metadata": {
+        "dates": ["June 23, 2020"],
+        "parties": ["Jeffrey Hinton", "Cornhusker Marriott"],
+        "keyTopics": ["hotel", "room service", "champagne", "romantic", "omaha", "summit"],
+        "legalRelevance": "Physical evidence supporting sexual proposition allegation and contradicting professional meeting claim"
+      }
+    },
+    
+    {
+      "fileName": "text_message_transcript.txt",
+      "exhibitLetter": "C",
+      "documentType": "text_messages",
+      "publicContent": "NEBRASKA STATE PATROL - DIGITAL FORENSICS UNIT\nTEXT MESSAGE RECOVERY REPORT\nCase: Martinez v. Hinton\nDevice: [DEVICE ID REDACTED]\nRecovery Date: January 15, 2025\n\nRecovered Message Thread:\nDate Range: June 23-24, 2020\nParticipants: [SENDER A], [SENDER B]\n\n[MESSAGE CONTENT REDACTED PENDING LEGAL REVIEW]\n\nNote: Messages recovered from backup server after device replacement.\nAuthenticity verified by digital signature analysis.\n\nPrepared by: Det. Sarah Chen, Digital Forensics\nSupervisor: Lt. Michael Torres",
+      
+      "secretContent": {
+        "senderA": "Jeffrey Hinton (Personal Device)",
+        "senderB": "Maria Martinez",
+        "messageContent": [
+          {
+            "time": "11:23 PM",
+            "sender": "Hinton",
+            "message": "I had such a wonderful evening with you Maria. I hope you know how special you are to me."
+          },
+          {
+            "time": "11:31 PM", 
+            "sender": "Martinez",
+            "message": "Governor, I'm not sure this is appropriate. We should keep our relationship professional."
+          },
+          {
+            "time": "11:47 PM",
+            "sender": "Hinton", 
+            "message": "I understand your hesitation, but I think we both feel this connection. Your career is so important to me."
+          },
+          {
+            "time": "12:03 AM",
+            "sender": "Martinez",
+            "message": "I need to think about this. I love my job and don't want anything to change that."
+          },
+          {
+            "time": "12:15 AM",
+            "sender": "Hinton",
+            "message": "Nothing has to change. In fact, I can make sure you're involved in all the major initiatives. Trust me."
+          }
+        ],
+        "relevance": "Direct evidence of sexual proposition and quid pro quo offer",
+        "criticalInfo": "Text exchange immediately after alleged hotel incident showing romantic pursuit and career advancement promises",
+        "impeachmentValue": "Definitively proves sexual proposition occurred and contradicts all of Hinton's denials"
+      },
+      
+      "metadata": {
+        "dates": ["June 23, 2020", "June 24, 2020"],
+        "parties": ["Jeffrey Hinton", "Maria Martinez", "Det. Sarah Chen"],
+        "keyTopics": ["text", "messages", "proposition", "quid pro quo", "career", "advancement"],
+        "legalRelevance": "Smoking gun evidence of sexual harassment and quid pro quo arrangement"
+      }
+    }
+  ]
+}
