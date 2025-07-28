@@ -239,8 +239,11 @@ function handleMultiFileUpload() {
     const witnessFile = document.getElementById('witnessFileInput').files[0];
     const scenarioFile = document.getElementById('scenarioFileInput').files[0];
     const documentsFile = document.getElementById('documentsFileInput').files[0];
-    const noDocuments = document.getElementById('noDocumentsOption').checked;
-    const noSecrets = document.getElementById('noSecretsOption').checked;
+    
+    // Get document mode from radio buttons
+    const documentMode = document.querySelector('input[name="documentMode"]:checked').value;
+    const noDocuments = documentMode === 'none';
+    const noSecrets = documentMode === 'public';
     
     if (!witnessFile || !scenarioFile) {
         displayError('Witness and Scenario files are required');
@@ -248,7 +251,7 @@ function handleMultiFileUpload() {
     }
     
     if (!noDocuments && !documentsFile) {
-        displayError('Documents file is required unless "No documents" is checked');
+        displayError('Documents file is required unless "Skip documents" is selected');
         return;
     }
     
@@ -708,13 +711,27 @@ function initialize() {
             dom.judgeModeCheckbox.click();
         }
     });
+    
+    // Disclosure triangle functionality
+    const customUploadToggle = document.getElementById('customUploadToggle');
+    const customUploadSection = document.getElementById('customUploadSection');
+    const disclosureArrow = customUploadToggle?.querySelector('.disclosure-arrow');
+    
+    customUploadToggle?.addEventListener('click', () => {
+        const isCurrentlyHidden = customUploadSection.style.display === 'none' || 
+                                 customUploadSection.style.display === '';
+        customUploadSection.style.display = isCurrentlyHidden ? 'block' : 'none';
+        if (disclosureArrow) {
+            disclosureArrow.classList.toggle('expanded', isCurrentlyHidden);
+        }
+    });
+    
     // Multi-file upload event listeners
     const loadCaseButton = document.getElementById('loadCaseButton');
     const witnessInput = document.getElementById('witnessFileInput');
     const scenarioInput = document.getElementById('scenarioFileInput');
     const documentsInput = document.getElementById('documentsFileInput');
-    const noDocumentsOption = document.getElementById('noDocumentsOption');
-    const noSecretsOption = document.getElementById('noSecretsOption');
+    const documentModeRadios = document.querySelectorAll('input[name="documentMode"]');
     
     loadCaseButton?.addEventListener('click', handleMultiFileUpload);
     
@@ -723,9 +740,10 @@ function initialize() {
         const hasWitness = witnessInput?.files.length > 0;
         const hasScenario = scenarioInput?.files.length > 0;
         const hasDocuments = documentsInput?.files.length > 0;
-        const noDocsChecked = noDocumentsOption?.checked;
+        const documentMode = document.querySelector('input[name="documentMode"]:checked')?.value;
+        const skipDocuments = documentMode === 'none';
         
-        const isValid = hasWitness && hasScenario && (noDocsChecked || hasDocuments);
+        const isValid = hasWitness && hasScenario && (skipDocuments || hasDocuments);
         
         if (loadCaseButton) {
             loadCaseButton.disabled = !isValid;
@@ -736,17 +754,20 @@ function initialize() {
     witnessInput?.addEventListener('change', validateUploadForm);
     scenarioInput?.addEventListener('change', validateUploadForm);
     documentsInput?.addEventListener('change', validateUploadForm);
-    noDocumentsOption?.addEventListener('change', (e) => {
-        // Disable documents input when "no documents" is checked
-        if (documentsInput) {
-            documentsInput.disabled = e.target.checked;
-            if (e.target.checked) {
-                documentsInput.value = '';
+    
+    // Document mode radio button handlers
+    documentModeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            // Disable documents input when "Skip documents" is selected
+            if (documentsInput) {
+                documentsInput.disabled = e.target.value === 'none';
+                if (e.target.value === 'none') {
+                    documentsInput.value = '';
+                }
             }
-        }
-        validateUploadForm();
+            validateUploadForm();
+        });
     });
-    noSecretsOption?.addEventListener('change', validateUploadForm);
     dom.scenarioSelector?.addEventListener('change', handleScenarioChange);
     dom.witnessSelector?.addEventListener('change', async (e) => {
         setState({ activeWitnessIndex: Number(e.target.value) });

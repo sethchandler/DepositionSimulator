@@ -113,7 +113,7 @@
         <div class="card">
             <h2 class="card-title">2. Choose a Scenario</h2>
             <div class="form-group">
-                <label>Start with a Pre-Built Scenario</label>
+                <label>Pre-Built Scenarios</label>
                 <select id="scenarioSelector">
                     <option value="-1" disabled selected>Select a case...</option>
                     <option value="0">Homicide Case: The Eyewitness with a Secret</option>
@@ -123,10 +123,14 @@
                     <option value="4">Breach of contract, informed consent: The Confident Surgeon</option>
                 </select>
             </div>
-            <p class="divider">OR</p>
+            
             <div class="form-group">
-                <label>Upload Your Own Case Files</label>
-                <div class="multi-file-upload">
+                <div class="disclosure-header" id="customUploadToggle">
+                    <span class="disclosure-arrow">▶</span>
+                    <label class="disclosure-label">Advanced: Upload Your Own Case Files</label>
+                </div>
+                
+                <div class="multi-file-upload" id="customUploadSection" style="display: none;">
                     <div class="file-input-group">
                         <label for="witnessFileInput">Witness File (.json) *</label>
                         <input type="file" id="witnessFileInput" accept=".json" required>
@@ -140,22 +144,25 @@
                     </div>
                     
                     <div class="file-input-group">
-                        <label for="documentsFileInput">Documents File (.json)</label>
+                        <label for="documentsFileInput">Documents File (.json) <span class="optional-label">(Optional)</span></label>
                         <input type="file" id="documentsFileInput" accept=".json">
-                        <small>Contains evidence library for impeachment (optional)</small>
+                        <small>Contains evidence library for impeachment and secret information</small>
                     </div>
                     
                     <div class="upload-options">
-                        <div class="checkbox-group">
-                            <label>
-                                <input type="checkbox" id="noDocumentsOption">
-                                No documents (witness testimony only)
+                        <label class="option-label">Document Handling:</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="documentMode" value="full" id="fullDocumentsOption" checked>
+                                <span class="radio-text">Include all content (default)</span>
                             </label>
-                        </div>
-                        <div class="checkbox-group">
-                            <label>
-                                <input type="checkbox" id="noSecretsOption">
-                                No secret information (public content only)
+                            <label class="radio-option">
+                                <input type="radio" name="documentMode" value="public" id="publicOnlyOption">
+                                <span class="radio-text">Public content only (removes secret information)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="documentMode" value="none" id="noDocumentsOption">
+                                <span class="radio-text">Skip documents (witness testimony only)</span>
                             </label>
                         </div>
                     </div>
@@ -163,8 +170,9 @@
                     <button id="loadCaseButton" class="button button-primary" disabled>
                         Load Case Files
                     </button>
+                    
+                    <p><small>See <a href="./EDUCATOR_GUIDE.md" target="_blank">📖 Educator Guide</a> for file format instructions</small></p>
                 </div>
-                <p><small>See <a href="./EDUCATOR_GUIDE.md" target="_blank">📖 Educator Guide</a> for file format instructions</small></p>
             </div>
         </div>
         

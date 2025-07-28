@@ -486,6 +486,39 @@
     animation: pulse-red 2s infinite; /* Adds the pulse effect */
 }
 
+/* === Disclosure Triangle Styles === */
+.disclosure-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 0;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.disclosure-header:hover {
+    background-color: #f8f9fa;
+}
+
+.disclosure-arrow {
+    font-size: 12px;
+    color: var(--label-color);
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.disclosure-arrow.expanded {
+    transform: rotate(90deg);
+}
+
+.disclosure-label {
+    font-weight: 500;
+    color: var(--text-color);
+    cursor: pointer;
+    margin: 0;
+}
+
 /* === Multi-File Upload Styles === */
 .multi-file-upload {
     border: 1px solid var(--border-color);
@@ -525,28 +558,49 @@
     font-style: italic;
 }
 
+.optional-label {
+    color: var(--label-color);
+    font-weight: normal;
+    font-style: italic;
+    font-size: 14px;
+}
+
 .upload-options {
     margin: 20px 0;
     padding: 15px;
     background: #f0f4f8;
     border-radius: 6px;
-    border-left: 4px solid var(--primary-color);
+    border-left: 4px solid var(--button-background);
 }
 
-.checkbox-group {
+.option-label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-color);
     margin-bottom: 10px;
 }
 
-.checkbox-group label {
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-option {
     display: flex;
     align-items: center;
     font-weight: normal;
     cursor: pointer;
+    padding: 4px 0;
 }
 
-.checkbox-group input[type="checkbox"] {
+.radio-option input[type="radio"] {
     margin-right: 10px;
-    transform: scale(1.2);
+    transform: scale(1.1);
+}
+
+.radio-text {
+    color: var(--text-color);
 }
 
 #loadCaseButton {
