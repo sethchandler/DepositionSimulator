@@ -28,7 +28,6 @@ export const DOM_ELEMENT_IDS = {
     apiKeyInput: 'apiKey',
     modelSelect: 'model',
     judgeModeCheckbox: 'judgeMode',
-    fileLoaderInput: 'fileLoader',
     scenarioSelector: 'scenarioSelector',
     witnessSelectorCard: 'witnessSelectorCard',
     witnessSelector: 'witnessSelector',

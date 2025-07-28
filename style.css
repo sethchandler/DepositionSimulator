@@ -486,6 +486,98 @@
     animation: pulse-red 2s infinite; /* Adds the pulse effect */
 }
 
+/* === Multi-File Upload Styles === */
+.multi-file-upload {
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: 8px;
+    background: var(--card-background);
+    margin-top: 10px;
+}
+
+.file-input-group {
+    margin-bottom: 15px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+.file-input-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.file-input-group input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    margin-bottom: 5px;
+}
+
+.file-input-group small {
+    color: #666;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.upload-options {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f0f4f8;
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.checkbox-group {
+    margin-bottom: 10px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+}
+
+#loadCaseButton {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+#loadCaseButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #ccc;
+}
+
+.file-validation-status {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.file-validation-status.valid {
+    color: #28a745;
+}
+
+.file-validation-status.invalid {
+    color: #dc3545;
+}
+
 /* Document UI Styles */
 .token-usage-container {
     margin-top: 12px;

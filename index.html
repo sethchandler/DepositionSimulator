@@ -125,8 +125,46 @@
             </div>
             <p class="divider">OR</p>
             <div class="form-group">
-                <label for="fileLoader">Upload Your Own Case File (.json).<br>Click <a href="https://github.com/sethchandler/DepositionSimulator/blob/main/README.md"> here</a> to learn how.</label>
-                <input type="file" id="fileLoader" accept=".json">
+                <label>Upload Your Own Case Files</label>
+                <div class="multi-file-upload">
+                    <div class="file-input-group">
+                        <label for="witnessFileInput">Witness File (.json) *</label>
+                        <input type="file" id="witnessFileInput" accept=".json" required>
+                        <small>Contains witness background, psychology, and motivations</small>
+                    </div>
+                    
+                    <div class="file-input-group">
+                        <label for="scenarioFileInput">Scenario File (.json) *</label>
+                        <input type="file" id="scenarioFileInput" accept=".json" required>
+                        <small>Contains educational objectives and case overview</small>
+                    </div>
+                    
+                    <div class="file-input-group">
+                        <label for="documentsFileInput">Documents File (.json)</label>
+                        <input type="file" id="documentsFileInput" accept=".json">
+                        <small>Contains evidence library for impeachment (optional)</small>
+                    </div>
+                    
+                    <div class="upload-options">
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="noDocumentsOption">
+                                No documents (witness testimony only)
+                            </label>
+                        </div>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="noSecretsOption">
+                                No secret information (public content only)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button id="loadCaseButton" class="button button-primary" disabled>
+                        Load Case Files
+                    </button>
+                </div>
+                <p><small>See <a href="./EDUCATOR_GUIDE.md" target="_blank">📖 Educator Guide</a> for file format instructions</small></p>
             </div>
         </div>
         

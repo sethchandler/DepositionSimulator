@@ -228,32 +228,133 @@ function handleExportPrompts() {
     URL.revokeObjectURL(url);
 }
 
-function handleFileLoad(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+// Multi-file upload state
+let uploadedFiles = {
+    witness: null,
+    scenario: null,
+    documents: null
+};
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
+function handleMultiFileUpload() {
+    const witnessFile = document.getElementById('witnessFileInput').files[0];
+    const scenarioFile = document.getElementById('scenarioFileInput').files[0];
+    const documentsFile = document.getElementById('documentsFileInput').files[0];
+    const noDocuments = document.getElementById('noDocumentsOption').checked;
+    const noSecrets = document.getElementById('noSecretsOption').checked;
+    
+    if (!witnessFile || !scenarioFile) {
+        displayError('Witness and Scenario files are required');
+        return;
+    }
+    
+    if (!noDocuments && !documentsFile) {
+        displayError('Documents file is required unless "No documents" is checked');
+        return;
+    }
+    
+    // Load and validate all files
+    Promise.all([
+        loadJsonFile(witnessFile, 'witness'),
+        loadJsonFile(scenarioFile, 'scenario'),
+        noDocuments ? Promise.resolve(null) : loadJsonFile(documentsFile, 'documents')
+    ]).then(async ([witnessData, scenarioData, documentsData]) => {
         try {
-            const caseData = JSON.parse(event.target.result);
-            // Basic validation
-            if (!caseData || (!caseData.witnesses && !caseData.witnessProfile)) {
-                 throw new Error("Invalid case file structure. Must contain a 'witnesses' array or witness profile.");
+            // Validate caseReference consistency
+            const witnessRef = witnessData.witnessProfile?.caseReference;
+            const scenarioRef = scenarioData.caseReference;
+            const documentsRef = documentsData?.caseReference;
+            
+            if (witnessRef !== scenarioRef || (documentsData && witnessRef !== documentsRef)) {
+                throw new Error(`Case references don't match:\nWitness: ${witnessRef}\nScenario: ${scenarioRef}\nDocuments: ${documentsRef || 'N/A'}`);
             }
             
-            // Clear existing documents before loading new case
+            // Clear existing content
             documentService.clearAllDocuments();
             
-            await loadWitnessData(caseData);
+            // Convert witness to legacy format and load
+            const legacyWitness = dataLoader.convertWitnessToLegacyFormat(witnessData);
+            await loadWitnessData(legacyWitness);
+            
+            // Handle documents
+            if (!noDocuments && documentsData) {
+                let processedDocuments = dataLoader.convertDocumentsToServiceFormat(documentsData);
+                
+                // Remove secrets if requested
+                if (noSecrets) {
+                    processedDocuments = processedDocuments.map(doc => ({
+                        ...doc,
+                        textContent: doc.metadata.originalPublicContent || doc.textContent.split('\n\n--- SECRET CONTENT ---')[0],
+                        metadata: {
+                            ...doc.metadata,
+                            secretInfo: null
+                        }
+                    }));
+                }
+                
+                // Load documents into service
+                processedDocuments.forEach(doc => {
+                    documentService.cleanupOldDocumentsIfNeeded();
+                    documentService.documentRegistry.set(doc.id, doc);
+                });
+                
+                updateDocumentUI();
+                console.log(`Loaded ${processedDocuments.length} documents`);
+            }
+            
+            // Clear scenario selector
             if (dom.scenarioSelector) dom.scenarioSelector.value = "-1";
             
-            console.log('Loaded custom case file and cleared previous documents');
+            // Clear file inputs
+            document.getElementById('witnessFileInput').value = '';
+            document.getElementById('scenarioFileInput').value = '';
+            document.getElementById('documentsFileInput').value = '';
+            
+            console.log('Successfully loaded multi-file case:', scenarioData.title);
+            
         } catch (err) {
-            const errorInfo = handleError(err, 'handleFileLoad');
-            displayError(`Failed to load file: ${errorInfo.userMessage}`);
+            const errorInfo = handleError(err, 'handleMultiFileUpload');
+            displayError(`Failed to load case files: ${errorInfo.userMessage}`);
         }
-    };
-    reader.readAsText(file);
+    }).catch(err => {
+        const errorInfo = handleError(err, 'handleMultiFileUpload');
+        displayError(`Failed to read files: ${errorInfo.userMessage}`);
+    });
+}
+
+function loadJsonFile(file, type) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const data = JSON.parse(event.target.result);
+                
+                // Basic validation based on type
+                switch (type) {
+                    case 'witness':
+                        if (!data.witnessProfile || !data.personalDetails) {
+                            throw new Error('Invalid witness file: missing witnessProfile or personalDetails');
+                        }
+                        break;
+                    case 'scenario':
+                        if (!data.id || !data.witness || !data.caseReference) {
+                            throw new Error('Invalid scenario file: missing id, witness, or caseReference');
+                        }
+                        break;
+                    case 'documents':
+                        if (!data.documents || !Array.isArray(data.documents)) {
+                            throw new Error('Invalid documents file: missing documents array');
+                        }
+                        break;
+                }
+                
+                resolve(data);
+            } catch (err) {
+                reject(new Error(`Failed to parse ${type} file: ${err.message}`));
+            }
+        };
+        reader.onerror = () => reject(new Error(`Failed to read ${type} file`));
+        reader.readAsText(file);
+    });
 }
 
 async function handleScenarioChange(e) {
@@ -312,7 +413,10 @@ async function handleScenarioChange(e) {
                 console.log(`Switched to legacy scenario ${index} and cleared previous documents`);
             }
             
-            if (dom.fileLoaderInput) dom.fileLoaderInput.value = ""; // Clear file input
+            // Clear any uploaded files
+            document.getElementById('witnessFileInput').value = '';
+            document.getElementById('scenarioFileInput').value = '';  
+            document.getElementById('documentsFileInput').value = '';
             
         } catch (err) {
             const errorInfo = handleError(err, 'handleScenarioChange');
@@ -604,7 +708,45 @@ function initialize() {
             dom.judgeModeCheckbox.click();
         }
     });
-    dom.fileLoaderInput?.addEventListener('change', handleFileLoad);
+    // Multi-file upload event listeners
+    const loadCaseButton = document.getElementById('loadCaseButton');
+    const witnessInput = document.getElementById('witnessFileInput');
+    const scenarioInput = document.getElementById('scenarioFileInput');
+    const documentsInput = document.getElementById('documentsFileInput');
+    const noDocumentsOption = document.getElementById('noDocumentsOption');
+    const noSecretsOption = document.getElementById('noSecretsOption');
+    
+    loadCaseButton?.addEventListener('click', handleMultiFileUpload);
+    
+    // Enable/disable load button based on required files
+    function validateUploadForm() {
+        const hasWitness = witnessInput?.files.length > 0;
+        const hasScenario = scenarioInput?.files.length > 0;
+        const hasDocuments = documentsInput?.files.length > 0;
+        const noDocsChecked = noDocumentsOption?.checked;
+        
+        const isValid = hasWitness && hasScenario && (noDocsChecked || hasDocuments);
+        
+        if (loadCaseButton) {
+            loadCaseButton.disabled = !isValid;
+        }
+    }
+    
+    // File input change handlers
+    witnessInput?.addEventListener('change', validateUploadForm);
+    scenarioInput?.addEventListener('change', validateUploadForm);
+    documentsInput?.addEventListener('change', validateUploadForm);
+    noDocumentsOption?.addEventListener('change', (e) => {
+        // Disable documents input when "no documents" is checked
+        if (documentsInput) {
+            documentsInput.disabled = e.target.checked;
+            if (e.target.checked) {
+                documentsInput.value = '';
+            }
+        }
+        validateUploadForm();
+    });
+    noSecretsOption?.addEventListener('change', validateUploadForm);
     dom.scenarioSelector?.addEventListener('change', handleScenarioChange);
     dom.witnessSelector?.addEventListener('change', async (e) => {
         setState({ activeWitnessIndex: Number(e.target.value) });

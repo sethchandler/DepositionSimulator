@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Guide - Deposition Simulator</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .summary-box {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .summary-box h2 {
+            color: #27ae60;
+            margin-top: 0;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .warning-box h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .tip-box {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .tip-box h3 {
+            color: #0c5460;
+            margin-top: 0;
+        }
+        
+        .example-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+        
+        .step-number {
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .author-info {
+            background: #f1f1f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 30px 0;
+            font-style: italic;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            color: #34495e;
+        }
+        
+        ul, ol {
+            padding-left: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        
+        .button-example {
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        .error-example {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎓 Student Guide to the Deposition Simulator</h1>
+        <p>Master the Art of Legal Depositions with AI-Powered Practice</p>
+    </div>
+
+    <div class="summary-box">
+        <h2>📋 Quick Summary</h2>
+        <p><strong>The Deposition Simulator is your AI-powered training partner for mastering legal depositions.</strong> This innovative tool lets you practice questioning AI witnesses who have realistic personalities, secrets, and motivations just like real people. You'll work with authentic legal documents, learn to catch witnesses in lies, and develop the skills that separate good lawyers from great ones.</p>
+        
+        <p><strong>What makes this special:</strong> Unlike textbook examples, these AI witnesses will evade, lie, and protect their secrets just like real people. You'll use actual documents to expose contradictions and practice the delicate art of impeachment. Whether you're preparing for your first deposition or sharpening advanced skills, this simulator provides safe, realistic practice that builds confidence and competence.</p>
+        
+        <p><strong>Remember:</strong> This is training, not a substitute for real depositions. Think of it as your flight simulator before taking the controls of an actual aircraft.</p>
+    </div>
+
+    <div class="author-info">
+        <p>Created by <strong>Seth J. Chandler</strong>, Law Foundation Professor at the University of Houston Law Center, who holds an A.B. from Princeton and a J.D. from Harvard. His scholarship spans insurance, constitutional law, and analytic methods, earning national recognition for innovative teaching. A longtime Wolfram Language power‑user and 2011 Wolfram Innovator Award recipient, he fuses coding with rigorous legal reasoning. Chandler's data‑science mindset lets him translate doctrinal nuance into interactive tools—like his AI‑powered essay‑grader and this deposition simulator—drilling strategic questioning. Visit his blog at <strong>legaled.ai</strong> for more insights on legal education and AI in the law.</p>
+    </div>
+
+    <h2>🚀 Getting Started: Your First Deposition</h2>
+
+    <div class="step">
+        <span class="step-number">1</span>
+        <div class="step-content">
+            <h3>Choose Your AI Assistant</h3>
+            <p>First, select which AI system will power your simulation. You have several options:</p>
+            <ul>
+                <li><strong>OpenAI (ChatGPT):</strong> Most reliable and sophisticated responses</li>
+                <li><strong>Google Gemini:</strong> Good alternative with strong reasoning</li>
+                <li><strong>Ollama (Local):</strong> Runs on your computer (technical setup required)</li>
+            </ul>
+            <p>For beginners, we recommend OpenAI. You'll need to enter your API key (think of it as your password for the AI service).</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">2</span>
+        <div class="step-content">
+            <h3>Pick a Case Scenario</h3>
+            <p>Choose from several realistic legal scenarios, each with a different type of witness:</p>
+            <ul>
+                <li><strong>John Sterling (Homicide):</strong> Eyewitness hiding an affair</li>
+                <li><strong>Susan Miller (Employment):</strong> HR manager concealing age discrimination</li>
+                <li><strong>Jeffrey Hinton (Sexual Harassment):</strong> Vice President denying inappropriate conduct</li>
+                <li><strong>Dr. McGee (Medical Malpractice):</strong> Surgeon defending failed procedure</li>
+            </ul>
+            <p>Each scenario includes realistic documents that can help you catch the witness in lies.</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <span class="step-number">3</span>
+        <div class="step-content">
+            <h3>Start Questioning</h3>
+            <p>Simply type your questions in the chat box and press Enter or click <span class="button-example">Send</span>. The AI witness will respond as a real person would, complete with evasions, emotions, and attempts to hide damaging information.</p>
+        </div>
+    </div>
+
+    <h2>📚 Understanding the Interface</h2>
+
+    <h3>Main Chat Area</h3>
+    <p>This is where your deposition happens. You'll see your questions and the witness's responses, just like a real deposition transcript. The AI will respond as the witness, while you play the role of the examining attorney.</p>
+
+    <h3>Document Viewer</h3>
+    <p>On the right side, you'll see any documents related to the case. These might include:</p>
+    <ul>
+        <li>Email chains</li>
+        <li>Phone records</li>
+        <li>Hotel receipts</li>
+        <li>Performance reviews</li>
+        <li>Medical records</li>
+    </ul>
+
+    <div class="tip-box">
+        <h3>💡 Pro Tip: Use Documents Strategically</h3>
+        <p>Don't show the witness damaging documents immediately. First, get them to commit to their story, then use the documents to expose contradictions. This is the essence of effective impeachment.</p>
+    </div>
+
+    <h3>Special Features</h3>
+    <ul>
+        <li><strong>Judge Mode:</strong> Toggle this on to have a judge present who can rule on objections</li>
+        <li><strong>Out-of-Character Mode:</strong> Switch to this for coaching tips and strategy advice</li>
+        <li><strong>Voice Input:</strong> Click the microphone to ask questions by speaking</li>
+        <li><strong>Save Transcript:</strong> Download your deposition for later review</li>
+    </ul>
+
+    <h2>🎯 Effective Questioning Techniques</h2>
+
+    <h3>Start with Safe Territory</h3>
+    <p>Begin with background questions that establish the witness's credentials and basic facts. This builds your foundation and helps the witness become comfortable (perhaps too comfortable).</p>
+
+    <div class="example-box">
+        <strong>Good opening questions:</strong><br>
+        "Please state your name for the record."<br>
+        "What is your current occupation?"<br>
+        "How long have you worked at TechCorp?"<br>
+        "Can you describe your typical duties?"
+    </div>
+
+    <h3>Build Your Timeline</h3>
+    <p>Establish a clear sequence of events. Get the witness to commit to specific dates, times, and locations. This creates a framework you can later challenge with documents.</p>
+
+    <div class="example-box">
+        <strong>Timeline building:</strong><br>
+        "Where were you on the evening of March 23rd?"<br>
+        "What time did you leave the office?"<br>
+        "Did you go directly home?"<br>
+        "Did you stop anywhere along the way?"
+    </div>
+
+    <h3>Use the Funnel Technique</h3>
+    <p>Start broad, then narrow down to specific details. This prevents witnesses from wiggling out later by claiming they misunderstood the question.</p>
+
+    <div class="example-box">
+        <strong>Funnel sequence:</strong><br>
+        "Did you have any communications that evening?" (broad)<br>
+        "Did you make any phone calls?" (narrower)<br>
+        "Did you call anyone between 11 PM and midnight?" (specific)<br>
+        "Did you call Maria Martinez at 11:47 PM?" (pinpoint)
+    </div>
+
+    <h3>Lock in Their Story</h3>
+    <p>Before impeaching with documents, make sure the witness is committed to their version of events. Use phrases like "Are you certain?" and "Is there anything you'd like to add?"</p>
+
+    <h2>📄 Working with Documents</h2>
+
+    <h3>Review Documents First</h3>
+    <p>Before questioning begins, read all available documents. Look for:</p>
+    <ul>
+        <li>Dates and times that contradict witness statements</li>
+        <li>Communications the witness might deny</li>
+        <li>Financial records showing motives</li>
+        <li>Evidence of knowledge the witness claims not to have</li>
+    </ul>
+
+    <h3>The Art of Impeachment</h3>
+    <p>When you find a contradiction between the witness's testimony and a document, follow this sequence:</p>
+
+    <ol>
+        <li><strong>Confront without the document first:</strong> "Are you certain you didn't call anyone that night?"</li>
+        <li><strong>Give them a chance to correct:</strong> "Would it refresh your memory if I showed you phone records?"</li>
+        <li><strong>Show the document:</strong> "I'm showing you Exhibit A, your phone records for March 23rd..."</li>
+        <li><strong>Make the contradiction clear:</strong> "This shows a call to Maria Martinez at 11:47 PM, doesn't it?"</li>
+    </ol>
+
+    <div class="example-box">
+        <strong>Effective impeachment sequence:</strong><br>
+        <strong>You:</strong> "You testified that you went straight home after work, correct?"<br>
+        <strong>Witness:</strong> "Yes, that's right."<br>
+        <strong>You:</strong> "You didn't stop anywhere?"<br>
+        <strong>Witness:</strong> "No."<br>
+        <strong>You:</strong> "I'm showing you what's been marked as Exhibit B, a hotel receipt from the Starlight Motel dated March 23rd. Do you see your name on this receipt?"<br>
+        <strong>Witness:</strong> "I... well, I may have stopped briefly to rest..."
+    </div>
+
+    <h2>⚖️ Handling Objections and Difficult Situations</h2>
+
+    <h3>When the Judge Gets Involved</h3>
+    <p>If you've enabled Judge Mode, opposing counsel may object to your questions. Here's how to handle common objections:</p>
+
+    <ul>
+        <li><strong>"Objection, leading!":</strong> Rephrase as an open-ended question</li>
+        <li><strong>"Objection, relevance!":</strong> Explain how this relates to the case</li>
+        <li><strong>"Objection, asked and answered!":</strong> Move on or explain why you need clarification</li>
+    </ul>
+
+    <div class="example-box">
+        <strong>Handling a relevance objection:</strong><br>
+        <strong>Opposing Counsel:</strong> "Objection, Your Honor. The witness's personal relationships aren't relevant to this contract dispute."<br>
+        <strong>You:</strong> "Your Honor, the witness's credibility is at issue. Evidence that he's lied about his personal relationships bears on whether this court should believe his testimony about the business relationship."
+    </div>
+
+    <h3>When Witnesses Become Evasive</h3>
+    <p>AI witnesses are programmed to be realistic, which means they'll try to avoid damaging admissions. Here are techniques for dealing with evasive witnesses:</p>
+
+    <ul>
+        <li><strong>Pin them down:</strong> "Please answer yes or no"</li>
+        <li><strong>Repeat the question:</strong> "You haven't answered my question. Did you or didn't you?"</li>
+        <li><strong>Use documents:</strong> Show them evidence that makes denial impossible</li>
+        <li><strong>Ask the judge for help:</strong> "Your Honor, could you please instruct the witness to answer the question?"</li>
+    </ul>
+
+    <h3>When the Judge Seems Unfair</h3>
+    <div class="warning-box">
+        <h3>⚠️ Important: Is This Realistic or a Problem?</h3>
+        <p>If the judge seems biased or makes questionable rulings, ask yourself: "Could this happen in real life?" Often, the answer is yes. Difficult judges are part of the legal landscape, and learning to handle them is valuable training.</p>
+        
+        <p><strong>When it's realistic training:</strong> The judge is gruff but makes legally sound rulings</p>
+        <p><strong>When it might be a problem:</strong> The judge makes clearly illegal rulings or behaves in ways no real judge would</p>
+        
+        <p>If you think the AI is malfunctioning, try refreshing the page and starting over, or switch to a different AI provider.</p>
+    </div>
+
+    <h2>🔧 Troubleshooting Common Problems</h2>
+
+    <h3>Technical Issues</h3>
+    
+    <div class="error-example">
+        Error: "Failed to connect to API"
+    </div>
+    <p><strong>Solution:</strong> Check your internet connection and verify your API key is entered correctly. Make sure you have credits remaining with your AI provider.</p>
+
+    <div class="error-example">
+        Error: "Document not found"
+    </div>
+    <p><strong>Solution:</strong> Refresh the page and reload your scenario. If the problem persists, try a different scenario.</p>
+
+    <div class="error-example">
+        The witness isn't responding or gives very short answers
+    </div>
+    <p><strong>Solution:</strong> Try asking more specific, open-ended questions. If the problem continues, switch to a different AI model or refresh the page.</p>
+
+    <h3>Simulation Issues</h3>
+
+    <p><strong>The witness admits everything too easily:</strong> Try a different scenario with a higher "perjury risk" witness, or ask more challenging questions that threaten their secrets.</p>
+
+    <p><strong>The witness won't answer basic questions:</strong> The AI might be confused. Try rephrasing your question more clearly or start with simpler background questions.</p>
+
+    <p><strong>Opposing counsel objects to everything:</strong> This might be realistic aggressive defense tactics. Argue your position or adjust your questioning style.</p>
+
+    <h3>Getting Better Results</h3>
+
+    <ul>
+        <li><strong>Be specific:</strong> Instead of "Tell me about that day," ask "What time did you arrive at the office on March 23rd?"</li>
+        <li><strong>Use legal language:</strong> The AI responds better to proper deposition terminology</li>
+        <li><strong>Stay in character:</strong> Address the witness directly, not the AI system</li>
+        <li><strong>Be patient:</strong> Building a strong deposition record takes time and careful questioning</li>
+    </ul>
+
+    <h2>🎓 Learning Objectives and Skill Development</h2>
+
+    <h3>Beginner Skills</h3>
+    <ul>
+        <li>Asking clear, non-leading questions</li>
+        <li>Building a chronological timeline</li>
+        <li>Using documents to refresh memory</li>
+        <li>Handling basic objections</li>
+    </ul>
+
+    <h3>Intermediate Skills</h3>
+    <ul>
+        <li>Impeaching witnesses with contradictory documents</li>
+        <li>Exposing bias and motive</li>
+        <li>Controlling evasive witnesses</li>
+        <li>Strategic use of exhibits</li>
+    </ul>
+
+    <h3>Advanced Skills</h3>
+    <ul>
+        <li>Setting perjury traps</li>
+        <li>Coordinating multiple documents for complex impeachment</li>
+        <li>Reading witness body language and verbal cues</li>
+        <li>Adapting strategy based on unexpected answers</li>
+    </ul>
+
+    <h2>⚠️ Important Limitations</h2>
+
+    <div class="warning-box">
+        <h3>This Is Training, Not Reality</h3>
+        <p><strong>The Deposition Simulator is a valuable training tool, but it cannot replace real-world experience.</strong> Here's what it can and cannot do:</p>
+        
+        <p><strong>What it does well:</strong></p>
+        <ul>
+            <li>Teaches questioning techniques and document use</li>
+            <li>Provides safe practice with realistic scenarios</li>
+            <li>Helps you understand witness psychology</li>
+            <li>Builds confidence for real depositions</li>
+        </ul>
+        
+        <p><strong>What it cannot do:</strong></p>
+        <ul>
+            <li>Replace supervision by experienced attorneys</li>
+            <li>Teach jurisdiction-specific procedural rules</li>
+            <li>Provide legal advice for actual cases</li>
+            <li>Guarantee success in real depositions</li>
+        </ul>
+    </div>
+
+    <h3>Ethical Considerations</h3>
+    <ul>
+        <li>Never use this simulator to practice on real case facts</li>
+        <li>Don't share confidential information with the AI system</li>
+        <li>Remember that AI responses are generated, not legal advice</li>
+        <li>Always follow your jurisdiction's rules for deposition practice</li>
+    </ul>
+
+    <h2>🏆 Success Strategies</h2>
+
+    <h3>Before You Start</h3>
+    <ul>
+        <li>Read the case summary to understand the legal issues</li>
+        <li>Review all available documents</li>
+        <li>Plan your questioning strategy</li>
+        <li>Set learning goals for the session</li>
+    </ul>
+
+    <h3>During the Deposition</h3>
+    <ul>
+        <li>Stay calm and methodical</li>
+        <li>Listen carefully to answers</li>
+        <li>Take notes on key admissions and contradictions</li>
+        <li>Don't be afraid to ask follow-up questions</li>
+    </ul>
+
+    <h3>After the Session</h3>
+    <ul>
+        <li>Review the transcript for lessons learned</li>
+        <li>Identify areas for improvement</li>
+        <li>Try the same scenario with different approaches</li>
+        <li>Practice with more challenging scenarios</li>
+    </ul>
+
+    <div class="tip-box">
+        <h3>💡 Final Advice</h3>
+        <p>Remember, becoming skilled at depositions takes practice. Don't expect perfection on your first try. Each session is an opportunity to learn and improve. The AI witnesses are designed to be challenging – if you find them difficult, that means the training is working!</p>
+        
+        <p>Most importantly, have fun with it. Legal practice is serious business, but learning doesn't have to be boring. Enjoy the intellectual challenge of matching wits with AI witnesses and uncovering their secrets.</p>
+    </div>
+
+    <h2>📞 Getting Help</h2>
+
+    <p>If you encounter persistent technical problems or have questions about using the simulator effectively, consider:</p>
+    <ul>
+        <li>Consulting with your legal writing or trial advocacy instructor</li>
+        <li>Reviewing Professor Chandler's blog at <strong>legaled.ai</strong> for additional tips</li>
+        <li>Practicing with study groups to share strategies</li>
+        <li>Attending workshops on deposition techniques</li>
+    </ul>
+
+    <div class="author-info">
+        <p><strong>About the Creator:</strong> Seth J. Chandler, Law Foundation Professor at the University of Houston Law Center, holds an A.B. from Princeton and a J.D. from Harvard. His scholarship spans insurance, constitutional law, and analytic methods, earning national recognition for innovative teaching. A longtime Wolfram Language power‑user and 2011 Wolfram Innovator Award recipient, he fuses coding with rigorous legal reasoning. Chandler's data‑science mindset lets him translate doctrinal nuance into interactive tools—like his AI‑powered essay‑grader and this deposition simulator—drilling strategic questioning. He demonstrates that, with today's AI, basic programming concepts plus persistence empower law students and faculty to build similarly powerful apps on their own. Visit <strong>legaled.ai</strong> to explore more resources for legal learning in the digital age.</p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #ddd; color: #666;">
+        <p>© 2024 Seth J. Chandler | University of Houston Law Center | legaled.ai</p>
+        <p><em>Master the law. Master the technology. Master your future.</em></p>
+    </footer>
+</body>
+</html>

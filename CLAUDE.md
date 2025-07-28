@@ -72,15 +72,15 @@ The application follows a modular ES6 architecture with clear separation of conc
 3. Add to `apiImplementations` object
 
 **Adding a new scenario:**
-1. Base64 encode the witness JSON
-2. Add to `PRE_BUILT_SCENARIOS` array in `scenarios.js`
-3. Add corresponding `<option>` to scenario selector in `index.html`
-
-**Adding documents to scenarios:**
-1. **Preferred Method**: Edit `/scenarios/documentManifest.json` (no coding required)
-2. Use templates in `/scenarios/templates/` for guidance
-3. See `EDUCATOR_GUIDE.md` for complete instructions
-4. **Legacy Method**: Update `CASE_DOCUMENTS` in `scenarios/documentLibrary.js`
+1. **Recommended**: Use multi-file upload interface (no coding required)
+   - Upload witness, scenario, and documents JSON files via browser
+   - System validates consistency and loads automatically
+   - Supports "no documents" and "no secrets" options for flexible scenarios
+   - See `EDUCATOR_GUIDE.md` for complete file format instructions
+2. **Alternative**: Add to built-in scenarios (requires file system access)
+   - Create files in `/data/witnesses/`, `/data/scenarios/`, `/data/documents/`
+   - Add to `SCENARIO_MAPPING` in `config.js`
+   - Add `<option>` to scenario selector in `index.html`
 
 **Adding new models:**
 - Update the `models` array in the relevant provider config in `config.js`
