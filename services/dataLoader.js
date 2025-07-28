@@ -13,28 +13,39 @@ export class DataLoader {
     }
     
     /**
+     * Generic method to load JSON files with caching
+     * @param {string} type - Data type (witnesses, scenarios, documents)
+     * @param {string} filename - Filename to load
+     * @param {Map} cache - Cache to use for this type
+     * @returns {Promise<Object>} Loaded data
+     */
+    async loadJsonFile(type, filename, cache) {
+        if (cache.has(filename)) {
+            return cache.get(filename);
+        }
+        
+        try {
+            const response = await fetch(`/data/${type}/${filename}`);
+            if (!response.ok) {
+                throw new Error(`Failed to load ${type} file: ${filename}`);
+            }
+            
+            const data = await response.json();
+            cache.set(filename, data);
+            return data;
+        } catch (error) {
+            console.error(`Error loading ${type}:`, error);
+            throw error;
+        }
+    }
+    
+    /**
      * Load a witness from the new JSON structure
      * @param {string} witnessFile - Filename like 'eyewitness-john-sterling.json'
      * @returns {Promise<Object>} Witness data
      */
     async loadWitness(witnessFile) {
-        if (this.witnessCache.has(witnessFile)) {
-            return this.witnessCache.get(witnessFile);
-        }
-        
-        try {
-            const response = await fetch(`/data/witnesses/${witnessFile}`);
-            if (!response.ok) {
-                throw new Error(`Failed to load witness file: ${witnessFile}`);
-            }
-            
-            const witnessData = await response.json();
-            this.witnessCache.set(witnessFile, witnessData);
-            return witnessData;
-        } catch (error) {
-            console.error('Error loading witness:', error);
-            throw error;
-        }
+        return this.loadJsonFile('witnesses', witnessFile, this.witnessCache);
     }
     
     /**
@@ -43,23 +54,7 @@ export class DataLoader {
      * @returns {Promise<Object>} Scenario data
      */
     async loadScenario(scenarioFile) {
-        if (this.scenarioCache.has(scenarioFile)) {
-            return this.scenarioCache.get(scenarioFile);
-        }
-        
-        try {
-            const response = await fetch(`/data/scenarios/${scenarioFile}`);
-            if (!response.ok) {
-                throw new Error(`Failed to load scenario file: ${scenarioFile}`);
-            }
-            
-            const scenarioData = await response.json();
-            this.scenarioCache.set(scenarioFile, scenarioData);
-            return scenarioData;
-        } catch (error) {
-            console.error('Error loading scenario:', error);
-            throw error;
-        }
+        return this.loadJsonFile('scenarios', scenarioFile, this.scenarioCache);
     }
     
     /**
@@ -68,23 +63,7 @@ export class DataLoader {
      * @returns {Promise<Object>} Documents data
      */
     async loadDocuments(documentsFile) {
-        if (this.documentCache.has(documentsFile)) {
-            return this.documentCache.get(documentsFile);
-        }
-        
-        try {
-            const response = await fetch(`/data/documents/${documentsFile}`);
-            if (!response.ok) {
-                throw new Error(`Failed to load documents file: ${documentsFile}`);
-            }
-            
-            const documentsData = await response.json();
-            this.documentCache.set(documentsFile, documentsData);
-            return documentsData;
-        } catch (error) {
-            console.error('Error loading documents:', error);
-            throw error;
-        }
+        return this.loadJsonFile('documents', documentsFile, this.documentCache);
     }
     
     /**
@@ -189,15 +168,30 @@ export class DataLoader {
     combineDocumentContent(doc) {
         let content = doc.publicContent;
         
-        if (doc.secretContent) {
-            // Replace placeholders with secret content
-            if (doc.secretContent.guestName) {
-                content = content.replace(/\[REDACTED FOR PRIVACY\]/g, doc.secretContent.guestName);
-            }
-            if (doc.secretContent.fullPhoneNumber) {
-                content = content.replace(/\(713\) 555-\[REDACTED\]/g, doc.secretContent.fullPhoneNumber);
-                content = content.replace(/\[CONFIDENTIAL\]/g, doc.secretContent.registeredTo);
-            }
+        if (doc.secretContent && typeof doc.secretContent === 'object') {
+            // Safely replace placeholders with validated secret content
+            const replacements = [
+                {
+                    pattern: /\[REDACTED FOR PRIVACY\]/g,
+                    value: doc.secretContent.guestName
+                },
+                {
+                    pattern: /\(713\) 555-\[REDACTED\]/g,
+                    value: doc.secretContent.fullPhoneNumber
+                },
+                {
+                    pattern: /\[CONFIDENTIAL\]/g,
+                    value: doc.secretContent.registeredTo
+                }
+            ];
+            
+            replacements.forEach(({ pattern, value }) => {
+                if (value && typeof value === 'string' && value.length < 100) {
+                    // Sanitize value to prevent injection
+                    const sanitizedValue = value.replace(/[<>]/g, '');
+                    content = content.replace(pattern, sanitizedValue);
+                }
+            });
         }
         
         return content;

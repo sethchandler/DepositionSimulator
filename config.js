@@ -1,3 +1,28 @@
+// Scenario mapping for JSON architecture
+export const SCENARIO_MAPPING = {
+    0: 'homicide-eyewitness',        // John Sterling
+    1: 'domestic-violence-neighbor', // Margaret Chen  
+    2: 'hr-manager-discrimination',  // Susan Miller
+    3: 'vp-sexual-harassment',       // Jeffrey Hinton
+    4: 'surgeon-breach-contract'     // Dr. McGee
+};
+
+// Case references that use the new JSON format
+export const NEW_JSON_FORMAT_CASES = [
+    'Homicide-PKM-2024-031',
+    'Civil-DV-2024-047', 
+    'Clark v. Ener-SzE Solutions',
+    'Martinez v. Hinton - Civil Case No. 2023-CV-4821',
+    'Hawkins v. McGee - Civil Case No. 2025-CV-3847'
+];
+
+// Document service configuration
+export const DOCUMENT_LIMITS = {
+    MAX_TOKENS: 10000,
+    MAX_DOCUMENTS: 50,
+    INITIAL_EXHIBIT_LETTER: 'A'
+};
+
 export const DOM_ELEMENT_IDS = {
     providerSelect: 'provider',
     apiKeyInput: 'apiKey',

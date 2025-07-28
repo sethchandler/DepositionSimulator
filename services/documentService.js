@@ -1,6 +1,8 @@
 // services/documentService.js
 
 import { ValidationError, FileError, ErrorCodes } from '../utils/errorHandler.js';
+import { formatCaseDocumentsForService } from '../scenarios/documentLibrary.js';
+import { DOCUMENT_LIMITS } from '../config.js';
 
 /**
  * Document service for managing document uploads, processing, and exhibit handling in depositions.
@@ -8,9 +10,9 @@ import { ValidationError, FileError, ErrorCodes } from '../utils/errorHandler.js
 export class DocumentService {
     
     constructor() {
-        this.maxTokens = 10000;
-        this.maxDocuments = 50; // Prevent memory issues
-        this.nextExhibitLetter = 'A';
+        this.maxTokens = DOCUMENT_LIMITS.MAX_TOKENS;
+        this.maxDocuments = DOCUMENT_LIMITS.MAX_DOCUMENTS;
+        this.nextExhibitLetter = DOCUMENT_LIMITS.INITIAL_EXHIBIT_LETTER;
         this.documentRegistry = new Map();
     }
     
@@ -232,7 +234,7 @@ export class DocumentService {
     }
     
     /**
-     * Extracts metadata from document content.
+     * Extracts comprehensive metadata from document content using advanced pattern recognition.
      * @param {string} fileName - Original file name
      * @param {string} content - Document text content
      * @returns {Object} Extracted metadata
@@ -243,7 +245,15 @@ export class DocumentService {
             documentType: this.identifyDocumentType(fileName, content),
             dates: this.extractDates(content),
             parties: this.extractParties(content),
-            keyTopics: this.extractKeyTopics(content)
+            keyTopics: this.extractKeyTopics(content),
+            // Enhanced metadata fields
+            legalConcepts: this.extractLegalConcepts(content),
+            financialInfo: this.extractFinancialInfo(content),
+            locations: this.extractLocations(content),
+            communications: this.extractCommunications(content),
+            timeReferences: this.extractTimeReferences(content),
+            documentStructure: this.analyzeDocumentStructure(content),
+            sentimentIndicators: this.extractSentimentIndicators(content)
         };
         
         return metadata;
@@ -367,6 +377,235 @@ export class DocumentService {
     }
     
     /**
+     * Extracts legal concepts and terminology from document content.
+     * @param {string} content - Document content
+     * @returns {Array<string>} Array of legal concepts found
+     */
+    extractLegalConcepts(content) {
+        const legalTerms = [
+            // Contract terms
+            'agreement', 'contract', 'clause', 'breach', 'liability', 'indemnification',
+            'warranty', 'consideration', 'termination', 'assignment', 'novation',
+            
+            // Legal procedures
+            'deposition', 'testimony', 'affidavit', 'subpoena', 'discovery', 'motion',
+            'objection', 'sustained', 'overruled', 'privilege', 'hearsay',
+            
+            // Criminal law
+            'allegation', 'evidence', 'witness', 'defendant', 'plaintiff', 'prosecution',
+            'defense', 'verdict', 'sentence', 'plea', 'conviction', 'acquittal',
+            
+            // Civil law
+            'negligence', 'damages', 'injunction', 'settlement', 'mediation', 'arbitration',
+            'jurisdiction', 'venue', 'standing', 'cause of action', 'statute of limitations',
+            
+            // Employment law
+            'discrimination', 'harassment', 'wrongful termination', 'whistleblower',
+            'retaliation', 'hostile work environment', 'accommodation'
+        ];
+        
+        const foundTerms = new Set();
+        const lowerContent = content.toLowerCase();
+        
+        legalTerms.forEach(term => {
+            if (lowerContent.includes(term.toLowerCase())) {
+                foundTerms.add(term);
+            }
+        });
+        
+        return Array.from(foundTerms).slice(0, 10);
+    }
+    
+    /**
+     * Extracts financial information from document content.
+     * @param {string} content - Document content
+     * @returns {Object} Financial information found
+     */
+    extractFinancialInfo(content) {
+        const financialInfo = {
+            amounts: [],
+            currencies: [],
+            accounts: [],
+            paymentMethods: []
+        };
+        
+        // Currency amounts
+        const amountPatterns = [
+            /\$[\d,]+\.?\d*/g,
+            /USD\s*[\d,]+\.?\d*/g,
+            /[\d,]+\.?\d*\s*dollars?/gi
+        ];
+        
+        amountPatterns.forEach(pattern => {
+            const matches = content.match(pattern) || [];
+            financialInfo.amounts.push(...matches.slice(0, 5));
+        });
+        
+        // Account numbers (partial for privacy)
+        const accountPattern = /account\s*(?:number|#)?\s*:?\s*(\*+\d{4}|\d{4})/gi;
+        const accountMatches = content.match(accountPattern) || [];
+        financialInfo.accounts = accountMatches.slice(0, 3);
+        
+        // Payment methods
+        const paymentMethods = ['cash', 'check', 'credit card', 'wire transfer', 'ach', 'paypal'];
+        paymentMethods.forEach(method => {
+            if (content.toLowerCase().includes(method)) {
+                financialInfo.paymentMethods.push(method);
+            }
+        });
+        
+        return financialInfo;
+    }
+    
+    /**
+     * Extracts location information from document content.
+     * @param {string} content - Document content
+     * @returns {Array<string>} Array of locations found
+     */
+    extractLocations(content) {
+        const locations = new Set();
+        
+        // Address patterns
+        const addressPatterns = [
+            /\d+\s+[A-Za-z\s]+(?:Street|St|Avenue|Ave|Boulevard|Blvd|Road|Rd|Drive|Dr|Lane|Ln|Court|Ct|Place|Pl)(?:\s*,?\s*[A-Za-z\s]+,?\s*[A-Z]{2}\s*\d{5})?/gi,
+            /[A-Z][a-z]+,\s*[A-Z]{2}\s*\d{5}/g,
+            /[A-Z][a-z]+\s+[A-Z]{2}\s*\d{5}/g
+        ];
+        
+        addressPatterns.forEach(pattern => {
+            const matches = content.match(pattern) || [];
+            matches.forEach(match => locations.add(match.trim()));
+        });
+        
+        // City, State patterns
+        const cityStatePattern = /([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*),\s*([A-Z]{2})/g;
+        const cityStateMatches = [...content.matchAll(cityStatePattern)];
+        cityStateMatches.forEach(match => {
+            locations.add(`${match[1]}, ${match[2]}`);
+        });
+        
+        return Array.from(locations).slice(0, 5);
+    }
+    
+    /**
+     * Extracts communication information (emails, phone numbers).
+     * @param {string} content - Document content
+     * @returns {Object} Communication information found
+     */
+    extractCommunications(content) {
+        const communications = {
+            emails: [],
+            phoneNumbers: [],
+            websites: []
+        };
+        
+        // Email addresses
+        const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+        const emails = content.match(emailPattern) || [];
+        communications.emails = emails.slice(0, 5);
+        
+        // Phone numbers
+        const phonePatterns = [
+            /\(\d{3}\)\s*\d{3}-\d{4}/g,
+            /\d{3}-\d{3}-\d{4}/g,
+            /\d{3}\.\d{3}\.\d{4}/g,
+            /\d{10}/g
+        ];
+        
+        phonePatterns.forEach(pattern => {
+            const matches = content.match(pattern) || [];
+            communications.phoneNumbers.push(...matches.slice(0, 3));
+        });
+        
+        // Websites
+        const websitePattern = /(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?/g;
+        const websites = content.match(websitePattern) || [];
+        communications.websites = websites.slice(0, 3);
+        
+        return communications;
+    }
+    
+    /**
+     * Extracts time references from document content.
+     * @param {string} content - Document content
+     * @returns {Array<string>} Array of time references found
+     */
+    extractTimeReferences(content) {
+        const timeReferences = new Set();
+        
+        // Time patterns
+        const timePatterns = [
+            /\d{1,2}:\d{2}\s*(?:AM|PM|am|pm)/gi,
+            /\d{1,2}:\d{2}:\d{2}/g,
+            /(?:morning|afternoon|evening|night|dawn|dusk|midnight|noon)/gi,
+            /(?:yesterday|today|tomorrow|last\s+\w+|next\s+\w+)/gi,
+            /\d+\s*(?:hours?|minutes?|seconds?|days?|weeks?|months?|years?)\s*(?:ago|later|before|after)/gi
+        ];
+        
+        timePatterns.forEach(pattern => {
+            const matches = content.match(pattern) || [];
+            matches.forEach(match => timeReferences.add(match.trim()));
+        });
+        
+        return Array.from(timeReferences).slice(0, 8);
+    }
+    
+    /**
+     * Analyzes the structure of the document.
+     * @param {string} content - Document content
+     * @returns {Object} Document structure analysis
+     */
+    analyzeDocumentStructure(content) {
+        const lines = content.split('\n').filter(line => line.trim().length > 0);
+        const words = content.split(/\s+/).filter(word => word.length > 0);
+        
+        return {
+            lineCount: lines.length,
+            wordCount: words.length,
+            averageLineLength: lines.length > 0 ? Math.round(words.length / lines.length) : 0,
+            hasHeaders: /^[A-Z\s]+$/m.test(content),
+            hasBulletPoints: /^\s*[-•*]\s/m.test(content),
+            hasNumberedList: /^\s*\d+\.\s/m.test(content),
+            hasSignature: /signature|signed|regards|sincerely|best/i.test(content),
+            isStructured: lines.some(line => /^\s*[A-Z][^:]*:\s*/.test(line))
+        };
+    }
+    
+    /**
+     * Extracts sentiment indicators from document content.
+     * @param {string} content - Document content
+     * @returns {Object} Sentiment analysis
+     */
+    extractSentimentIndicators(content) {
+        const sentiment = {
+            positive: [],
+            negative: [],
+            neutral: [],
+            legal: [],
+            urgent: []
+        };
+        
+        const sentimentWords = {
+            positive: ['agree', 'satisfied', 'pleased', 'excellent', 'good', 'successful', 'effective'],
+            negative: ['disagree', 'concerned', 'disappointed', 'failed', 'breach', 'violation', 'deny'],
+            legal: ['pursuant', 'whereas', 'hereby', 'heretofore', 'notwithstanding', 'therein'],
+            urgent: ['immediate', 'urgent', 'asap', 'critical', 'emergency', 'deadline', 'expires']
+        };
+        
+        const lowerContent = content.toLowerCase();
+        
+        Object.entries(sentimentWords).forEach(([category, words]) => {
+            words.forEach(word => {
+                if (lowerContent.includes(word)) {
+                    sentiment[category].push(word);
+                }
+            });
+        });
+        
+        return sentiment;
+    }
+    
+    /**
      * Creates a smart summary for large documents.
      * @param {string} content - Full document content
      * @returns {string} Document summary
@@ -406,41 +645,164 @@ export class DocumentService {
     }
     
     /**
-     * Detects if a user question references any uploaded documents.
+     * Detects if a user question references any uploaded documents using advanced pattern matching.
      * @param {string} userInput - User's question or statement
-     * @returns {Array<Object>} Array of potentially referenced documents
+     * @returns {Array<Object>} Array of potentially referenced documents with relevance scores
      */
     detectDocumentReferences(userInput) {
         const referencedDocs = [];
         const lowerInput = userInput.toLowerCase();
         
+        // Advanced reference patterns
+        const referencePatterns = {
+            exhibit: /exhibit\s*([a-z])\b/gi,
+            document: /(?:the\s+)?(?:document|email|letter|contract|report|memo|statement)\s*(?:from|dated|about|regarding)\s*([^.!?]+)/gi,
+            date: /(?:on|from|dated|during)\s*([^.!?]*(?:\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}|january|february|march|april|may|june|july|august|september|october|november|december)[^.!?]*)/gi,
+            person: /(?:from|to|by|with|regarding)\s+([a-z][a-z\s]+?[a-z])(?:\s|,|\.|\?|!|$)/gi,
+            content: /(?:says?|states?|mentions?|shows?|indicates?)\s*[""']([^""']+)[""']/gi
+        };
+        
         for (const [id, doc] of this.documentRegistry) {
-            // Check for date references
-            if (doc.metadata.dates.some(date => lowerInput.includes(date.toLowerCase()))) {
-                referencedDocs.push(doc);
-                continue;
+            let relevanceScore = 0;
+            const matchReasons = [];
+            
+            // Direct exhibit reference (highest priority)
+            const exhibitMatches = [...lowerInput.matchAll(referencePatterns.exhibit)];
+            if (exhibitMatches.some(match => match[1].toLowerCase() === doc.exhibitLetter.toLowerCase())) {
+                relevanceScore += 100;
+                matchReasons.push(`Direct exhibit reference (${doc.exhibitLetter})`);
             }
             
-            // Check for document type references
+            // Document type references
             if (lowerInput.includes(doc.metadata.documentType)) {
-                referencedDocs.push(doc);
-                continue;
+                relevanceScore += 20;
+                matchReasons.push(`Document type match (${doc.metadata.documentType})`);
             }
             
-            // Check for exhibit references
-            if (lowerInput.includes(`exhibit ${doc.exhibitLetter.toLowerCase()}`)) {
-                referencedDocs.push(doc);
-                continue;
+            // Date references with fuzzy matching
+            const dateMatches = [...lowerInput.matchAll(referencePatterns.date)];
+            for (const dateMatch of dateMatches) {
+                const matchedDate = dateMatch[1];
+                if (doc.metadata.dates.some(docDate => 
+                    this.datesAreSimilar(matchedDate, docDate))) {
+                    relevanceScore += 30;
+                    matchReasons.push(`Date reference match`);
+                    break;
+                }
             }
             
-            // Check for party name references
-            if (doc.metadata.parties.some(party => lowerInput.includes(party.toLowerCase()))) {
-                referencedDocs.push(doc);
-                continue;
+            // Party/person name references
+            const personMatches = [...lowerInput.matchAll(referencePatterns.person)];
+            for (const personMatch of personMatches) {
+                const matchedPerson = personMatch[1].trim();
+                if (doc.metadata.parties.some(party => 
+                    this.namesAreSimilar(matchedPerson, party))) {
+                    relevanceScore += 25;
+                    matchReasons.push(`Person name match (${matchedPerson})`);
+                    break;
+                }
+            }
+            
+            // Content keyword matching
+            const contentMatches = [...lowerInput.matchAll(referencePatterns.content)];
+            for (const contentMatch of contentMatches) {
+                const quotedContent = contentMatch[1];
+                if (doc.textContent.toLowerCase().includes(quotedContent.toLowerCase())) {
+                    relevanceScore += 40;
+                    matchReasons.push(`Content quote match`);
+                    break;
+                }
+            }
+            
+            // Topic keyword matching
+            const inputWords = lowerInput.split(/\s+/).filter(word => word.length > 3);
+            const topicMatches = inputWords.filter(word => 
+                doc.metadata.keyTopics.some(topic => 
+                    topic.includes(word) || word.includes(topic)
+                )
+            );
+            if (topicMatches.length > 0) {
+                relevanceScore += topicMatches.length * 5;
+                matchReasons.push(`Topic keyword matches (${topicMatches.length})`);
+            }
+            
+            // Contextual document type hints
+            const contextualHints = {
+                'receipt': ['paid', 'payment', 'cost', 'bill', 'charge'],
+                'email': ['sent', 'received', 'correspondence', 'message'],
+                'contract': ['agreement', 'terms', 'signed', 'clause'],
+                'report': ['findings', 'analysis', 'investigation', 'conclusion'],
+                'statement': ['said', 'testified', 'declared', 'claimed']
+            };
+            
+            const hints = contextualHints[doc.metadata.documentType] || [];
+            const hintMatches = hints.filter(hint => lowerInput.includes(hint));
+            if (hintMatches.length > 0) {
+                relevanceScore += hintMatches.length * 10;
+                matchReasons.push(`Contextual hints (${hintMatches.join(', ')})`);
+            }
+            
+            // Add document if it has any relevance
+            if (relevanceScore > 0) {
+                referencedDocs.push({
+                    ...doc,
+                    relevanceScore,
+                    matchReasons
+                });
             }
         }
         
-        return referencedDocs;
+        // Sort by relevance score (highest first) and return top matches
+        return referencedDocs
+            .sort((a, b) => b.relevanceScore - a.relevanceScore)
+            .slice(0, 3); // Limit to top 3 most relevant documents
+    }
+    
+    /**
+     * Checks if two dates are referring to the same date with fuzzy matching.
+     * @param {string} input - User input date string
+     * @param {string} docDate - Document date string  
+     * @returns {boolean} True if dates likely refer to the same date
+     */
+    datesAreSimilar(input, docDate) {
+        // Simple fuzzy date matching - could be enhanced with date parsing libraries
+        const inputNormalized = input.replace(/[^\w\s]/g, ' ').toLowerCase();
+        const docDateNormalized = docDate.replace(/[^\w\s]/g, ' ').toLowerCase();
+        
+        // Check for common date components
+        const dateComponents = docDateNormalized.split(/\s+/);
+        return dateComponents.some(component => 
+            component.length > 2 && inputNormalized.includes(component)
+        );
+    }
+    
+    /**
+     * Checks if two names are likely referring to the same person.
+     * @param {string} input - User input name
+     * @param {string} docName - Document name
+     * @returns {boolean} True if names likely refer to the same person
+     */
+    namesAreSimilar(input, docName) {
+        const inputNormalized = input.toLowerCase().trim();
+        const docNameNormalized = docName.toLowerCase().trim();
+        
+        // Exact match
+        if (inputNormalized === docNameNormalized) return true;
+        
+        // Check if one name contains the other
+        if (inputNormalized.includes(docNameNormalized) || 
+            docNameNormalized.includes(inputNormalized)) return true;
+        
+        // Check for last name match
+        const inputParts = inputNormalized.split(/\s+/);
+        const docParts = docNameNormalized.split(/\s+/);
+        
+        return inputParts.some(inputPart => 
+            docParts.some(docPart => 
+                inputPart.length > 2 && docPart.length > 2 && 
+                (inputPart === docPart || inputPart.includes(docPart) || docPart.includes(inputPart))
+            )
+        );
     }
     
     /**
@@ -519,6 +881,153 @@ ${doc.textContent}
     getTotalTokenCount() {
         return Array.from(this.documentRegistry.values())
             .reduce((total, doc) => total + doc.tokenCount, 0);
+    }
+    
+    /**
+     * Loads pre-built documents for a case scenario.
+     * @param {string} caseReference - Case reference ID from witness data
+     * @returns {Promise<Array<Object>>} Array of loaded document objects
+     */
+    async loadPreBuiltDocuments(caseReference) {
+        if (!caseReference || typeof caseReference !== 'string') {
+            console.warn('Invalid case reference provided for document loading');
+            return [];
+        }
+        
+        try {
+            // Get formatted documents from case library (now async)
+            const caseDocuments = await formatCaseDocumentsForService(caseReference);
+            
+            if (caseDocuments.length === 0) {
+                console.log(`No pre-built documents found for case: ${caseReference}`);
+                return [];
+            }
+            
+            // Clear any existing case documents to avoid conflicts
+            this.clearCaseDocuments(caseReference);
+            
+            // Add documents to registry
+            const loadedDocuments = [];
+            for (const doc of caseDocuments) {
+                // Ensure we don't exceed document limits
+                this.cleanupOldDocumentsIfNeeded();
+                
+                this.documentRegistry.set(doc.id, doc);
+                loadedDocuments.push(doc);
+                
+                console.log(`Loaded case document: ${doc.fileName} (Exhibit ${doc.exhibitLetter})`);
+            }
+            
+            console.log(`Successfully loaded ${loadedDocuments.length} pre-built documents for case ${caseReference}`);
+            return loadedDocuments;
+            
+        } catch (error) {
+            console.error('Error loading pre-built documents:', error);
+            throw new ValidationError(
+                `Failed to load case documents: ${error.message}`,
+                'caseReference',
+                caseReference
+            );
+        }
+    }
+    
+    /**
+     * Clears all documents associated with a specific case.
+     * @param {string} caseReference - Case reference to clear
+     */
+    clearCaseDocuments(caseReference) {
+        const documentsToRemove = [];
+        
+        for (const [docId, doc] of this.documentRegistry) {
+            if (doc.metadata?.caseReference === caseReference) {
+                documentsToRemove.push(docId);
+            }
+        }
+        
+        documentsToRemove.forEach(docId => {
+            const doc = this.documentRegistry.get(docId);
+            console.log(`Removing existing case document: ${doc.fileName}`);
+            this.documentRegistry.delete(docId);
+        });
+    }
+    
+    /**
+     * Gets summary statistics about loaded documents.
+     * @returns {Object} Document statistics
+     */
+    getDocumentStatistics() {
+        const allDocs = Array.from(this.documentRegistry.values());
+        const preBuiltDocs = allDocs.filter(doc => doc.metadata?.isPreBuilt);
+        const uploadedDocs = allDocs.filter(doc => !doc.metadata?.isPreBuilt);
+        const activeDocs = allDocs.filter(doc => doc.isActive);
+        
+        return {
+            total: allDocs.length,
+            preBuilt: preBuiltDocs.length,
+            uploaded: uploadedDocs.length,
+            active: activeDocs.length,
+            totalTokens: this.getTotalTokenCount(),
+            capacityUsed: (this.getTotalTokenCount() / this.maxTokens * 100).toFixed(1),
+            documentTypes: this.getDocumentTypeBreakdown(allDocs)
+        };
+    }
+    
+    /**
+     * Gets breakdown of document types.
+     * @param {Array} documents - Array of document objects
+     * @returns {Object} Document type counts
+     */
+    getDocumentTypeBreakdown(documents) {
+        const breakdown = {};
+        documents.forEach(doc => {
+            const type = doc.metadata?.documentType || 'unknown';
+            breakdown[type] = (breakdown[type] || 0) + 1;
+        });
+        return breakdown;
+    }
+    
+    /**
+     * Searches documents by content or metadata.
+     * @param {string} searchTerm - Term to search for
+     * @returns {Array<Object>} Array of matching documents
+     */
+    searchDocuments(searchTerm) {
+        if (!searchTerm || typeof searchTerm !== 'string') {
+            return [];
+        }
+        
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        const matchingDocs = [];
+        
+        for (const doc of this.documentRegistry.values()) {
+            // Search in content
+            if (doc.textContent.toLowerCase().includes(lowerSearchTerm)) {
+                matchingDocs.push({
+                    ...doc,
+                    matchType: 'content'
+                });
+                continue;
+            }
+            
+            // Search in metadata
+            const metadata = doc.metadata || {};
+            const searchableText = [
+                doc.fileName,
+                metadata.documentType,
+                ...(metadata.parties || []),
+                ...(metadata.keyTopics || []),
+                ...(metadata.dates || [])
+            ].join(' ').toLowerCase();
+            
+            if (searchableText.includes(lowerSearchTerm)) {
+                matchingDocs.push({
+                    ...doc,
+                    matchType: 'metadata'
+                });
+            }
+        }
+        
+        return matchingDocs;
     }
     
     /**

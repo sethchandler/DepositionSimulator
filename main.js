@@ -1,6 +1,6 @@
 // main.js
 
-import { PROVIDERS_CONFIG } from './config.js';
+import { PROVIDERS_CONFIG, SCENARIO_MAPPING, NEW_JSON_FORMAT_CASES } from './config.js';
 import { PRE_BUILT_SCENARIOS } from './scenarios.js';
 import { dataLoader } from './services/dataLoader.js';
 import { getState, setState, getActiveWitness } from './state.js';
@@ -14,7 +14,6 @@ import { getPresetInstruction } from './prompts/presets.js';
 // Document system imports
 import { initializeDocumentUI, updateDocumentUI, getDocumentContextForQuestion, clearActiveDocumentContexts } from './ui/documentUI.js';
 import { documentService } from './services/documentService.js';
-import { documentViewer } from './ui/documentViewer.js';
 
 // --- Security Utilities ---
 /**
@@ -261,16 +260,7 @@ async function handleScenarioChange(e) {
     const index = parseInt(e.target.value, 10);
     if (index >= 0) {
         try {
-            // Map scenario indices to JSON scenario IDs
-            const scenarioMap = {
-                0: 'homicide-eyewitness',        // John Sterling
-                1: 'domestic-violence-neighbor', // Margaret Chen  
-                2: 'hr-manager-discrimination',  // Susan Miller
-                3: 'vp-sexual-harassment',       // Jeffrey Hinton
-                4: 'surgeon-breach-contract'     // Dr. McGee
-            };
-            
-            const scenarioId = scenarioMap[index];
+            const scenarioId = SCENARIO_MAPPING[index];
             
             if (scenarioId) {
                 // Use new JSON system for all scenarios
@@ -497,23 +487,16 @@ async function loadWitnessData(data) {
     // Load pre-built documents if available (now async)
     // Skip auto-loading for new JSON scenarios - they handle documents differently
     const witness = witnesses[0];
-    const newJsonCases = [
-        'Homicide-PKM-2024-031',
-        'Civil-DV-2024-047', 
-        'Clark v. Ener-SzE Solutions',
-        'Martinez v. Hinton - Civil Case No. 2023-CV-4821',
-        'Hawkins v. McGee - Civil Case No. 2025-CV-3847'
-    ];
     
     if (witness && witness.witnessProfile?.caseReference && 
-        !newJsonCases.includes(witness.witnessProfile.caseReference)) {
+        !NEW_JSON_FORMAT_CASES.includes(witness.witnessProfile.caseReference)) {
         try {
             await documentService.loadPreBuiltDocuments(witness.witnessProfile.caseReference);
             console.log(`Loaded case documents for: ${witness.witnessProfile.caseReference}`);
         } catch (error) {
             console.warn('Failed to load case documents:', error);
         }
-    } else if (witness && newJsonCases.includes(witness.witnessProfile?.caseReference)) {
+    } else if (witness && NEW_JSON_FORMAT_CASES.includes(witness.witnessProfile?.caseReference)) {
         console.log(`Skipping old document system for new JSON case: ${witness.witnessProfile.caseReference}`);
     }
     
